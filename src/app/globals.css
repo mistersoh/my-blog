@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-rgb: 255, 255, 255;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: rgb(var(--background-rgb));
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.markdown-body {
+  @apply p-4;
+}
+
+.markdown-body h1 {
+  @apply text-3xl font-bold mb-4;
+}
+
+.markdown-body h2 {
+  @apply text-2xl font-bold mt-6 mb-3;
+}
+
+.markdown-body h3 {
+  @apply text-xl font-bold mt-5 mb-2;
+}
+
+.markdown-body p {
+  @apply mb-4;
+}
+
+.markdown-body ul {
+  @apply list-disc pl-5 mb-4;
+}
+
+.markdown-body ol {
+  @apply list-decimal pl-5 mb-4;
+}
+
+.markdown-body li {
+  @apply mb-1;
+}
+
+.markdown-body blockquote {
+  @apply border-l-4 border-gray-300 pl-4 italic my-4;
+}
+
+.markdown-body pre {
+  @apply bg-gray-100 p-4 rounded my-4 overflow-auto;
+}
+
+.markdown-body code {
+  @apply bg-gray-100 px-1 py-0.5 rounded text-sm;
+}
+
+.markdown-body pre code {
+  @apply bg-transparent p-0;
+}
+
+.markdown-body img {
+  @apply max-w-full my-4;
+}
+
+.markdown-body a {
+  @apply text-blue-600 hover:underline;
+} 
