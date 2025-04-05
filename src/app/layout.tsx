@@ -23,8 +23,8 @@ export default function RootLayout({
             <nav>
               <ul className="flex space-x-4">
                 <li><a href="/" className="hover:text-gray-300">홈</a></li>
-                <li><a href="/blog" className="hover:text-gray-300">블로그</a></li>
-                <li><a href="/resume" className="hover:text-gray-300">이력서</a></li>
+                <li><a href="/blog/" className="hover:text-gray-300">블로그</a></li>
+                <li><a href="/resume/" className="hover:text-gray-300">이력서</a></li>
               </ul>
             </nav>
           </div>
