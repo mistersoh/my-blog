@@ -14,6 +14,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ko">
+      <head>
+        {/* 캐시 방지 메타 태그 */}
+        <meta httpEquiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+        <meta httpEquiv="Pragma" content="no-cache" />
+        <meta httpEquiv="Expires" content="0" />
+      </head>
       <body>
         <header className="bg-gray-800 text-white p-4">
           <div className="container mx-auto flex justify-between items-center">
