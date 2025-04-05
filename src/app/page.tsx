@@ -1,8 +1,17 @@
 import React from 'react';
 import { getBlogPosts } from '@/lib/markdown';
 
+// 블로그 포스트 타입 정의
+interface BlogPost {
+  id: string;
+  title: string;
+  date: string;
+  description: string;
+  [key: string]: any;
+}
+
 export default function Home() {
-  const posts = getBlogPosts();
+  const posts = getBlogPosts() as BlogPost[];
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -17,7 +26,7 @@ export default function Home() {
             <h2 className="text-2xl font-bold mb-3">이력서</h2>
             <p className="mb-4">전문적인 이력서를 확인해보세요.</p>
             <a 
-              href="/resume/index.html" 
+              href="/resume/" 
               className="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
             >
               이력서 보기
@@ -27,7 +36,7 @@ export default function Home() {
             <h2 className="text-2xl font-bold mb-3">블로그</h2>
             <p className="mb-4">최신 블로그 글을 확인해보세요.</p>
             <a 
-              href="/blog/index.html" 
+              href="/blog/" 
               className="inline-block bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition"
             >
               블로그 보기
@@ -39,14 +48,16 @@ export default function Home() {
       <section>
         <h2 className="text-3xl font-bold mb-6">최신 블로그 게시물</h2>
         <div className="grid grid-cols-1 gap-6">
-          {posts.slice(0, 3).map((post: any) => (
+          {posts.map((post) => (
             <div key={post.id} className="border border-gray-200 p-6 rounded-lg hover:shadow-md transition">
               <h3 className="text-xl font-bold mb-2">
-                <a href={`/blog/${post.id}/index.html`} className="text-blue-600 hover:underline">
+                <a href={`/blog/${post.id}/`} className="text-blue-600 hover:underline">
                   {post.title}
                 </a>
               </h3>
-              <p className="text-gray-500 mb-2">{new Date(post.date).toLocaleDateString('ko-KR')}</p>
+              <p className="text-gray-500 mb-2">
+                {new Date(post.date).toLocaleDateString('ko-KR')}
+              </p>
               <p className="text-gray-600">{post.description}</p>
             </div>
           ))}

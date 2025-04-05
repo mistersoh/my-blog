@@ -5,8 +5,8 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  // 폴더 기반 라우팅을 위한 설정 - 슬래시 추가 비활성화 (우리는 직접 index.html 사용)
-  trailingSlash: false,
+  // 폴더 기반 라우팅을 위한 설정 - 모든 URL에 슬래시 추가
+  trailingSlash: true,
   // 정적 사이트 생성을 위해 마크다운 파일 트랜스파일링
   webpack: (config) => {
     config.module.rules.push({
