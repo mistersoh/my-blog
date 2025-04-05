@@ -5,10 +5,6 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  // 상대 경로 사용을 위한 설정
-  assetPrefix: '.',
-  basePath: '',
-  trailingSlash: true,
   // 정적 사이트 생성을 위해 마크다운 파일 트랜스파일링
   webpack: (config) => {
     config.module.rules.push({

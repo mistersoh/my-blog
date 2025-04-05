@@ -18,13 +18,13 @@ export default function RootLayout({
         <header className="bg-gray-800 text-white p-4">
           <div className="container mx-auto flex justify-between items-center">
             <h1 className="text-xl font-bold">
-              <a href="./">정적 웹사이트</a>
+              <a href="/">정적 웹사이트</a>
             </h1>
             <nav>
               <ul className="flex space-x-4">
-                <li><a href="./" className="hover:text-gray-300">홈</a></li>
-                <li><a href="./blog" className="hover:text-gray-300">블로그</a></li>
-                <li><a href="./resume" className="hover:text-gray-300">이력서</a></li>
+                <li><a href="/" className="hover:text-gray-300">홈</a></li>
+                <li><a href="/blog" className="hover:text-gray-300">블로그</a></li>
+                <li><a href="/resume" className="hover:text-gray-300">이력서</a></li>
               </ul>
             </nav>
           </div>

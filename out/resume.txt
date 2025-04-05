@@ -1,0 +1,207 @@
+3:I[4707,[],""]
+4:I[6423,[],""]
+0:["lC0coaukUgjvDKf0Vslqr",[[["",{"children":["resume",{"children":["__PAGE__",{}]}]},"$undefined","$undefined",true],["",{"children":["resume",{"children":["__PAGE__",{},[["$L1","$L2",null],null],null]},[null,["$","$L3",null,{"parallelRouterKey":"children","segmentPath":["children","resume","children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L4",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined"}]],null]},[[[["$","link","0",{"rel":"stylesheet","href":"/_next/static/css/de9ad483e9fafeb5.css","precedence":"next","crossOrigin":"$undefined"}]],["$","html",null,{"lang":"ko","children":["$","body",null,{"children":[["$","header",null,{"className":"bg-gray-800 text-white p-4","children":["$","div",null,{"className":"container mx-auto flex justify-between items-center","children":[["$","h1",null,{"className":"text-xl font-bold","children":["$","a",null,{"href":"/","children":"정적 웹사이트"}]}],["$","nav",null,{"children":["$","ul",null,{"className":"flex space-x-4","children":[["$","li",null,{"children":["$","a",null,{"href":"/","className":"hover:text-gray-300","children":"홈"}]}],["$","li",null,{"children":["$","a",null,{"href":"/blog","className":"hover:text-gray-300","children":"블로그"}]}],["$","li",null,{"children":["$","a",null,{"href":"/resume","className":"hover:text-gray-300","children":"이력서"}]}]]}]}]]}]}],["$","main",null,{"className":"container mx-auto p-4","children":["$","$L3",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L4",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[]}]}],["$","footer",null,{"className":"bg-gray-800 text-white p-4 mt-8","children":["$","div",null,{"className":"container mx-auto text-center","children":["$","p",null,{"children":["© ",2025," 마크다운 정적 웹사이트. All rights reserved."]}]}]}]]}]}]],null],null],["$L5",null]]]]
+6:T1479,<h1>Wonwoo Soh</h1>
+<h2>About me</h2>
+<p>With a Master's degree in AI and Computer Science specializing in computer vision, I have 4 years of experience as a platform/cloud backend developer. My expertise includes RESTful APIs using Python, Java, and Spring Framework to improve POC projects and implementing MSA-based systems for global services. Through cloud infrastructure experience, I've reduced development time by 25% through CI/CD implementation and monitoring setup.</p>
+<h2>Personal Info</h2>
+<ul>
+<li>Seoul, South Korea | +82 010-8243-1031 | <a href="mailto:mistersoh@naver.com">mistersoh@naver.com</a></li>
+<li><a href="https://www.linkedin.com/in/wonwoo-soh-62baa61a2">LinkedIn</a> | <a href="https://www.notion.so/My-works-22ac7d69b79b4dfe8454094276cadb64?pvs=21">Portfolio</a> | <a href="https://github.com/mistersoh?tab=repositories">GitHub</a></li>
+</ul>
+<h2>PROFESSIONAL EXPERIENCE</h2>
+<p><strong>Cloud Developer</strong> | <em>Seegene Inc</em> | Seoul, South Korea | 04/2021 - Present</p>
+<ul>
+<li>Led AWS to Azure migration, backend refactoring, and deployment to partners in Spain and Israel</li>
+<li>Designed and implemented REST APIs and MSA-based systems for SSO login, authorization, and user management using Spring Framework in AWS/Azure environments</li>
+<li>Built CI/CD pipelines with GitHub Actions, Docker, ECR, and ArgoCD, reducing deployment costs by 20%</li>
+<li>Migrated business service to MSA architecture, improving web logic patching efficiency by 25%</li>
+<li>Constructed TB-scale data pipelines and implemented DB CDC using Azure Event Hub and Kafka</li>
+<li>Optimized COVID-19 data collection, reducing time from 1 month to 30 seconds (1440% efficiency)</li>
+</ul>
+<h2>PROJECTS</h2>
+<blockquote>
+<p><strong>OneSystem R&#x26;D Portal</strong> | <em>Seegene</em> | 06/2023 - Present | Backend (70%), DevOps (30%) | Team: 50</p>
+</blockquote>
+<ul>
+<li>Azure migration, overseas service deployment, and authentication system using Keycloak/Azure AD</li>
+<li>Implemented JWT-based permissions, menu control, company-specific project management, and metrics dashboards</li>
+<li>Migrated from AWS to Azure with Key Vault security, EKS to AKS transition, and CI/CD reconfiguration</li>
+<li>Built monitoring with Grafana, Prometheus, and Fluentd, improving API performance by 10%</li>
+</ul>
+<blockquote>
+<p><strong>WISDOM</strong> | <em>Seegene</em> | 01/2022 - 02/2023 | Backend (60%), Solutions Architect (40%) | Team: 10</p>
+</blockquote>
+<ul>
+<li>Developed DB query generation APIs using AWS Lambda, reducing costs by 25%</li>
+<li>Built CI/CD pipeline in monorepo environment, cutting API development costs by 10%</li>
+<li>Designed TB-scale data update pipeline with Airflow monitoring</li>
+</ul>
+<blockquote>
+<p><strong>Viral Host Prediction</strong> | <em>Seegene</em> | 04/2022 - 12/2022 | AI Developer (100%) | Team: 10</p>
+</blockquote>
+<ul>
+<li>Participated in BERT model development for deep learning-based viral host prediction</li>
+</ul>
+<blockquote>
+<p><strong>Corona Patient Data Collection</strong> | <em>Seegene</em> | 06/2021 - 09/2021 | Data Engineer (100%) | Team: 1</p>
+</blockquote>
+<ul>
+<li>Automated COVID-19 data collection, improving efficiency by 1440%</li>
+</ul>
+<h2>SKILLS</h2>
+<ul>
+<li><strong>Backend:</strong> AWS, Azure, Java, Spring, Python, Kafka</li>
+<li><strong>Infrastructure:</strong> Docker, Kubernetes, GitHub Actions, ArgoCD, Grafana</li>
+<li><strong>DB/ML:</strong> MongoDB, MySQL, Computer Vision</li>
+</ul>
+<p><strong>Languages:</strong> Korean (Native), English (Professional), Chinese (Professional), Japanese (Professional)</p>
+<h2>RESEARCHES</h2>
+<blockquote>
+<p><strong>MiRo Robot Football Development</strong></p>
+</blockquote>
+<ul>
+<li>Developed autonomous capabilities for animal therapy robot to play soccer</li>
+<li>Used OpenCV for object detection and ROS/PID control for motion research</li>
+<li><a href="https://github.com/mistersoh/Miro_motion_control">GitHub</a></li>
+</ul>
+<blockquote>
+<p><strong>Drama Character Tracking</strong></p>
+</blockquote>
+<ul>
+<li>Created algorithms combining RCNN and HOG for TV drama character tracking</li>
+<li>Developed custom dataset for labeling characters across scenes</li>
+<li><a href="https://github.com/mistersoh/Tracking_individuals_across_multiple_scene_and_shots_from_TV_dramas">GitHub</a></li>
+</ul>
+<blockquote>
+<p><strong>ML/AI Research</strong></p>
+</blockquote>
+<ul>
+<li>Various projects in image classification, regression, reinforcement learning</li>
+<li><a href="https://github.com/mistersoh/Image_classification_and_denoising">Image Classification</a> | <a href="https://github.com/mistersoh/Ridge_Regression">Ridge Regression</a> | <a href="https://github.com/mistersoh/Reinforcement">Reinforcement Learning</a> | <a href="https://github.com/mistersoh/Competitive_learning">Competitive Learning</a></li>
+</ul>
+<h2>EDUCATION</h2>
+<p><strong>Master's in AI and Computer Science</strong> | <em>The University of Sheffield</em> | UK | 2013-2020 | GPA: 3.7/4.0</p>
+<p><strong>International Baccalaureate</strong> | <em>Prem Tinsulanonda Int'l School</em> | Thailand | 2010-2013</p>
+<h2>CERTIFICATIONS</h2>
+<ul>
+<li><strong>AWS Certified Developer - Associate</strong> | 01/2023 - 01/2026</li>
+</ul>
+7:T14be,<h1>서원우</h1>
+<h2>자기소개</h2>
+<p>컴퓨터 비전에 특화된 인공지능 및 컴퓨터 과학 석사 학위를 가지고 있으며, 4년간의 플랫폼/클라우드 백엔드 개발자 경험을 보유하고 있습니다. Python, Java, Spring Framework를 활용한 RESTful API 개발, POC 프로젝트 성능 향상, 글로벌 서비스용 MSA 기반 프로젝트 구현 전문성을 갖추었습니다. CI/CD 파이프라인 구축과 모니터링 시스템 설정으로 개발 시간을 25% 단축했습니다.</p>
+<h2>개인정보</h2>
+<ul>
+<li>서울, 대한민국 | 010-8243-1031 | <a href="mailto:mistersoh@naver.com">mistersoh@naver.com</a></li>
+<li><a href="https://www.linkedin.com/in/wonwoo-soh-62baa61a2">링크드인</a> | <a href="https://www.notion.so/My-works-22ac7d69b79b4dfe8454094276cadb64?pvs=21">포트폴리오</a> | <a href="https://github.com/mistersoh?tab=repositories">깃허브</a></li>
+</ul>
+<h2>경력 사항</h2>
+<p><strong>클라우드 개발자</strong> | <em>씨젠 주식회사</em> | 서울, 대한민국 | 2021.04 - 현재</p>
+<ul>
+<li>AWS에서 Azure로의 마이그레이션, 백엔드 리팩토링 및 스페인, 이스라엘 파트너사 배포 주도</li>
+<li>Spring Framework를 사용해 SSO 로그인, 권한 부여, 사용자 관리를 위한 REST API 및 MSA 기반 시스템 설계/구현</li>
+<li>GitHub Actions, Docker, ECR, ArgoCD로 CI/CD 파이프라인 구축, 배포 비용 20% 절감</li>
+<li>단일 비즈니스 서비스를 MSA 아키텍처로 마이그레이션, 웹 로직 패치 효율성 25% 향상</li>
+<li>TB 규모 데이터 파이프라인 구축 및 Azure Event Hub와 Kafka로 DB CDC 구현</li>
+<li>COVID-19 데이터 수집 최적화, 소요 시간을 1개월에서 30초로 단축(효율성 1440% 향상)</li>
+</ul>
+<h2>프로젝트</h2>
+<blockquote>
+<p><strong>OneSystem R&#x26;D 포털</strong> | <em>씨젠</em> | 2023.06 - 현재 | 백엔드(70%), DevOps(30%) | 팀: 50명</p>
+</blockquote>
+<ul>
+<li>Azure 마이그레이션, 해외 서비스 배포, Keycloak/Azure AD 기반 인증 시스템 구현</li>
+<li>JWT 기반 권한, 메뉴 제어, 회사별 프로젝트 관리, 지표 대시보드 개발</li>
+<li>AWS에서 Azure로 마이그레이션(Key Vault 보안 강화, EKS→AKS 전환, CI/CD 재구성)</li>
+<li>Grafana, Prometheus, Fluentd로 모니터링 구축, API 성능 10% 향상</li>
+</ul>
+<blockquote>
+<p><strong>WISDOM</strong> | <em>씨젠</em> | 2022.01 - 2023.02 | 백엔드(60%), 솔루션 아키텍트(40%) | 팀: 10명</p>
+</blockquote>
+<ul>
+<li>AWS Lambda로 DB 쿼리 생성 API 개발, 비용 25% 절감</li>
+<li>모노레포 환경에서 CI/CD 파이프라인 구축, API 개발 비용 10% 절감</li>
+<li>Airflow로 TB 규모 데이터 자동 업데이트 파이프라인 설계</li>
+</ul>
+<blockquote>
+<p><strong>바이러스 숙주 예측 모델링</strong> | <em>씨젠</em> | 2022.04 - 2022.12 | AI 개발(100%) | 팀: 10명</p>
+</blockquote>
+<ul>
+<li>딥러닝 기반 바이러스 숙주 예측을 위한 BERT 모델 개발 참여</li>
+</ul>
+<blockquote>
+<p><strong>코로나 환자 데이터 수집</strong> | <em>씨젠</em> | 2021.06 - 2021.09 | 데이터 엔지니어(100%) | 팀: 1명</p>
+</blockquote>
+<ul>
+<li>COVID-19 데이터 수집 자동화, 작업 효율성 1440% 향상</li>
+</ul>
+<h2>기술 스택</h2>
+<ul>
+<li><strong>백엔드:</strong> AWS, Azure, Java, Spring, Python, Kafka</li>
+<li><strong>인프라:</strong> Docker, Kubernetes, GitHub Actions, ArgoCD, Grafana</li>
+<li><strong>DB/AI:</strong> MongoDB, MySQL, Computer Vision</li>
+</ul>
+<p><strong>언어:</strong> 한국어(모국어), 영어(전문가), 중국어(전문가), 일본어(전문가)</p>
+<h2>연구</h2>
+<blockquote>
+<p><strong>MiRo 로봇 축구 개발</strong></p>
+</blockquote>
+<ul>
+<li>동물 치료용 로봇의 자율 주행 기능 개발로 축구 기능 구현</li>
+<li>OpenCV로 객체 감지, ROS/PID 제어 기술로 동작 연구</li>
+<li><a href="https://github.com/mistersoh/Miro_motion_control">깃허브</a></li>
+</ul>
+<blockquote>
+<p><strong>드라마 등장인물 추적</strong></p>
+</blockquote>
+<ul>
+<li>RCNN과 HOG 결합한 알고리즘으로 TV 드라마 등장인물 추적</li>
+<li>장면 간 캐릭터 라벨링을 위한 커스텀 데이터셋 개발</li>
+<li><a href="https://github.com/mistersoh/Tracking_individuals_across_multiple_scene_and_shots_from_TV_dramas">깃허브</a></li>
+</ul>
+<blockquote>
+<p><strong>ML/AI 연구</strong></p>
+</blockquote>
+<ul>
+<li>이미지 분류, 회귀분석, 강화학습 등 다양한 프로젝트</li>
+<li><a href="https://github.com/mistersoh/Image_classification_and_denoising">이미지 분류</a> | <a href="https://github.com/mistersoh/Ridge_Regression">릿지 회귀</a> | <a href="https://github.com/mistersoh/Reinforcement">강화학습</a> | <a href="https://github.com/mistersoh/Competitive_learning">경쟁 학습</a></li>
+</ul>
+<h2>학력</h2>
+<p><strong>인공지능 및 컴퓨터 과학 석사</strong> | <em>쉐필드 대학교</em> | 영국 | 2013-2020 | GPA: 3.7/4.0</p>
+<p><strong>국제 바칼로레아 디플로마</strong> | <em>프렘 틴술라논다 국제학교</em> | 태국 | 2010-2013</p>
+<h2>자격증</h2>
+<ul>
+<li><strong>AWS 인증 개발자 - 어소시에이트</strong> | 2023.01 - 2026.01</li>
+</ul>
+8:T4c3,
+        document.addEventListener('DOMContentLoaded', function() {
+          document.querySelectorAll('button[data-lang]').forEach(button => {
+            button.addEventListener('click', function() {
+              const lang = this.getAttribute('data-lang');
+              toggleLanguage(lang);
+            });
+          });
+        });
+        
+        function toggleLanguage(lang) {
+          // 모든 버튼 비활성화
+          document.querySelectorAll('button[data-lang]').forEach(btn => {
+            btn.classList.remove('bg-blue-600', 'text-white');
+            btn.classList.add('bg-gray-200', 'text-gray-800');
+          });
+          
+          // 선택된 버튼 활성화
+          document.getElementById('btn-' + lang).classList.remove('bg-gray-200', 'text-gray-800');
+          document.getElementById('btn-' + lang).classList.add('bg-blue-600', 'text-white');
+          
+          // 모든 이력서 숨기기
+          document.querySelectorAll('.resume-content').forEach(content => {
+            content.classList.add('hidden');
+          });
+          
+          // 선택된 이력서 표시
+          document.getElementById('resume-' + lang).classList.remove('hidden');
+        }
+      2:["$","div",null,{"className":"max-w-4xl mx-auto","children":[["$","h1",null,{"className":"text-3xl font-bold mb-6","children":"이력서"}],["$","div",null,{"className":"mb-8","children":[["$","div",null,{"className":"flex space-x-4 mb-6","children":[["$","button",null,{"id":"btn-en","className":"px-4 py-2 bg-blue-600 text-white rounded active","data-lang":"en","children":"English"}],["$","button",null,{"id":"btn-ko","className":"px-4 py-2 bg-gray-200 text-gray-800 rounded","data-lang":"ko","children":"한국어"}]]}],["$","div",null,{"id":"resume-en","className":"resume-content","children":["$","div",null,{"className":"markdown-body prose max-w-none","dangerouslySetInnerHTML":{"__html":"$6"}}]}],["$","div",null,{"id":"resume-ko","className":"resume-content hidden","children":["$","div",null,{"className":"markdown-body prose max-w-none","dangerouslySetInnerHTML":{"__html":"$7"}}]}]]}],["$","script",null,{"dangerouslySetInnerHTML":{"__html":"$8"}}]]}]
+5:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"마크다운 정적 웹사이트"}],["$","meta","3",{"name":"description","content":"마크다운 파일을 사용하여 생성된 정적 웹사이트"}]]
+1:null
