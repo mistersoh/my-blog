@@ -26,12 +26,12 @@ export default function RootLayout({
         <header className="bg-gray-800 text-white p-4">
           <div className="container mx-auto flex justify-between items-center">
             <h1 className="text-xl font-bold">
-              <a href="/" className="nav-link">정적 웹사이트</a>
+              <a href="/" target="_self" className="nav-link">정적 웹사이트</a>
             </h1>
             <nav>
               <ul className="flex space-x-4">
-                <li><a href="/" className="nav-link hover:text-gray-300">홈</a></li>
-                <li><a href="/blog/" className="nav-link hover:text-gray-300">블로그</a></li>
+                <li><a href="/" target="_self" className="nav-link hover:text-gray-300">홈</a></li>
+                <li><a href="/blog/" target="_self" className="nav-link hover:text-gray-300">블로그</a></li>
                 <li><a href="/resume/" target="_self" className="nav-link hover:text-gray-300">이력서</a></li>
               </ul>
             </nav>
