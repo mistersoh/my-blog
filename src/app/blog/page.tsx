@@ -21,7 +21,7 @@ export default function BlogPage() {
         {posts.map((post) => (
           <div key={post.id} className="border border-gray-200 p-6 rounded-lg hover:shadow-md transition">
             <h2 className="text-xl font-bold mb-2">
-              <a href={`/blog/${post.id}/index.html`} className="nav-link text-blue-600 hover:underline">
+              <a href={`/blog/${post.id}/`} className="nav-link text-blue-600 hover:underline">
                 {post.title}
               </a>
             </h2>
@@ -30,7 +30,7 @@ export default function BlogPage() {
             </p>
             <p className="text-gray-600">{post.description}</p>
             <div className="mt-4">
-              <a href={`/blog/${post.id}/index.html`} className="nav-link text-blue-600 hover:underline">
+              <a href={`/blog/${post.id}/`} className="nav-link text-blue-600 hover:underline">
                 계속 읽기 →
               </a>
             </div>

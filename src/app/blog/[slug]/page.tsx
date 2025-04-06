@@ -40,7 +40,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
       </article>
       
       <div className="mt-8 pt-8 border-t">
-        <a href="/blog/index.html" className="nav-link text-blue-600 hover:underline">← 블로그 목록으로 돌아가기</a>
+        <a href="/blog/" className="nav-link text-blue-600 hover:underline">← 블로그 목록으로 돌아가기</a>
       </div>
     </div>
   );

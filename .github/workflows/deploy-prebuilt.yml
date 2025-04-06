@@ -23,7 +23,7 @@ jobs:
       # S3 웹사이트 설정 업데이트
       - name: Update S3 website configuration
         run: |
-          aws s3 website s3://${{ secrets.AWS_S3_BUCKET }} --index-document index.html --error-document index.html
+          aws s3 website s3://${{ secrets.AWS_S3_BUCKET }} --index-document index.html --error-document 404.html
           
       # out 폴더의 모든 콘텐츠를 있는 그대로 S3에 동기화
       - name: Deploy entire out folder to S3

@@ -31,7 +31,7 @@ export default function RootLayout({
             <nav>
               <ul className="flex space-x-4">
                 <li><a href="/" className="nav-link hover:text-gray-300">홈</a></li>
-                <li><a href="/blog/index.html" className="nav-link hover:text-gray-300">블로그</a></li>
+                <li><a href="/blog/" className="nav-link hover:text-gray-300">블로그</a></li>
                 <li><a href="/resume/index.html" className="nav-link hover:text-gray-300">이력서</a></li>
               </ul>
             </nav>
@@ -74,9 +74,6 @@ export default function RootLayout({
                 let fetchUrl;
                 if (href === '/') {
                   fetchUrl = '/index.html';
-                } else if (href.endsWith('.html')) {
-                  // .html로 끝나는 경우 그대로 사용
-                  fetchUrl = href;
                 } else {
                   // 슬래시로 끝나는 경우 처리
                   fetchUrl = href.endsWith('/') ? href + 'index.html' : href + '/index.html';
@@ -120,9 +117,6 @@ export default function RootLayout({
                 
                 if (currentPath === '/') {
                   fetchUrl = '/index.html';
-                } else if (currentPath.endsWith('.html')) {
-                  // .html로 끝나는 경우 그대로 사용
-                  fetchUrl = currentPath;
                 } else {
                   fetchUrl = currentPath.endsWith('/') ? currentPath + 'index.html' : currentPath + '/index.html';
                 }
