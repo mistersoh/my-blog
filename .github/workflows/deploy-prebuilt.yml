@@ -1,11 +1,9 @@
-name: Deploy Pre-built Files to S3
+name: Deploy to S3
 
 on:
   push:
     branches:
       - main
-    paths:
-      - 'out/**'  # out 디렉토리의 변경사항만 감지
 
 jobs:
   deploy:
@@ -21,23 +19,23 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-northeast-2
-          
-      - name: Deploy HTML files to S3 (no cache)
-        run: |
-          aws s3 sync ./out/ s3://${{ secrets.AWS_S3_BUCKET }} \
-            --exclude "*" \
-            --include "*.html" \
-            --delete \
-            --cache-control "no-cache, no-store, must-revalidate" \
-            --content-type "text/html; charset=utf-8"
-          
-      - name: Deploy static assets to S3 (with cache)
-        run: |
-          aws s3 sync ./out/ s3://${{ secrets.AWS_S3_BUCKET }} \
-            --delete \
-            --exclude "*.html" \
-            --cache-control "public,max-age=31536000"
       
+      # S3 웹사이트 설정 업데이트
       - name: Update S3 website configuration
         run: |
-          aws s3 website s3://${{ secrets.AWS_S3_BUCKET }} --index-document index.html --error-document index.html 
+          aws s3 website s3://${{ secrets.AWS_S3_BUCKET }} --index-document index.html --error-document index.html
+          
+      # out 폴더의 모든 콘텐츠를 있는 그대로 S3에 동기화
+      - name: Deploy entire out folder to S3
+        run: |
+          aws s3 sync ./out/ s3://${{ secrets.AWS_S3_BUCKET }} --delete
+      
+      # CloudFront 캐시 무효화 (CDN 사용 시)
+      - name: Invalidate CloudFront (if using CDN)
+        if: ${{ env.CLOUDFRONT_DISTRIBUTION_ID != '' }}
+        env:
+          CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
+        run: |
+          if [ ! -z "$CLOUDFRONT_DISTRIBUTION_ID" ]; then
+            aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION_ID --paths "/*"
+          fi 

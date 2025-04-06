@@ -5,8 +5,8 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  // 명시적 파일 경로 사용을 위해 후행 슬래시 비활성화
-  trailingSlash: false,
+  // 후행 슬래시 사용 (깔끔한 URL 구조를 위해)
+  trailingSlash: true,
   // 정적 사이트 생성을 위해 마크다운 파일 트랜스파일링
   webpack: (config) => {
     config.module.rules.push({
