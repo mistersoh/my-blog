@@ -26,7 +26,8 @@ export default function Home() {
             <h2 className="text-2xl font-bold mb-3">이력서</h2>
             <p className="mb-4">전문적인 이력서를 확인해보세요.</p>
             <a 
-              href="/resume/" 
+              href="/resume/index.html" 
+              target="_self"
               className="nav-link inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
             >
               이력서 보기
@@ -36,7 +37,8 @@ export default function Home() {
             <h2 className="text-2xl font-bold mb-3">블로그</h2>
             <p className="mb-4">최신 블로그 글을 확인해보세요.</p>
             <a 
-              href="/blog/" 
+              href="/blog/index.html" 
+              target="_self"
               className="nav-link inline-block bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition"
             >
               블로그 보기

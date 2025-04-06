@@ -31,8 +31,8 @@ export default function RootLayout({
             <nav>
               <ul className="flex space-x-4">
                 <li><a href="/" className="nav-link hover:text-gray-300">홈</a></li>
-                <li><a href="/blog/" className="nav-link hover:text-gray-300">블로그</a></li>
-                <li><a href="/resume/index.html" className="nav-link hover:text-gray-300">이력서</a></li>
+                <li><a href="/blog/index.html" className="nav-link hover:text-gray-300">블로그</a></li>
+                <li><a href="/resume/index.html" target="_self" className="nav-link hover:text-gray-300">이력서</a></li>
               </ul>
             </nav>
           </div>
