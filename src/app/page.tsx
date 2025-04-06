@@ -26,7 +26,7 @@ export default function Home() {
             <h2 className="text-2xl font-bold mb-3">이력서</h2>
             <p className="mb-4">전문적인 이력서를 확인해보세요.</p>
             <a 
-              href="/resume/index.html" 
+              href="/resume/" 
               target="_self"
               className="nav-link inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
             >
@@ -37,7 +37,7 @@ export default function Home() {
             <h2 className="text-2xl font-bold mb-3">블로그</h2>
             <p className="mb-4">최신 블로그 글을 확인해보세요.</p>
             <a 
-              href="/blog/index.html" 
+              href="/blog/" 
               target="_self"
               className="nav-link inline-block bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition"
             >
@@ -53,7 +53,7 @@ export default function Home() {
           {posts.map((post) => (
             <div key={post.id} className="border border-gray-200 p-6 rounded-lg hover:shadow-md transition">
               <h3 className="text-xl font-bold mb-2">
-                <a href={`/blog/${post.id}/`} className="nav-link text-blue-600 hover:underline">
+                <a href={`/blog/${post.id}/`} target="_self" className="nav-link text-blue-600 hover:underline">
                   {post.title}
                 </a>
               </h3>

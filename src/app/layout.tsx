@@ -31,8 +31,8 @@ export default function RootLayout({
             <nav>
               <ul className="flex space-x-4">
                 <li><a href="/" className="nav-link hover:text-gray-300">홈</a></li>
-                <li><a href="/blog/index.html" className="nav-link hover:text-gray-300">블로그</a></li>
-                <li><a href="/resume/index.html" target="_self" className="nav-link hover:text-gray-300">이력서</a></li>
+                <li><a href="/blog/" className="nav-link hover:text-gray-300">블로그</a></li>
+                <li><a href="/resume/" target="_self" className="nav-link hover:text-gray-300">이력서</a></li>
               </ul>
             </nav>
           </div>
@@ -67,6 +67,11 @@ export default function RootLayout({
               
               // 모든 내비게이션 링크에 클릭 핸들러 추가
               $('.nav-link').on('click', function(e) {
+                // target="_self" 속성이 있는 링크는 기본 동작 유지
+                if ($(this).attr('target') === '_self') {
+                  return true;
+                }
+                
                 e.preventDefault();
                 const href = $(this).attr('href');
                 
@@ -74,6 +79,9 @@ export default function RootLayout({
                 let fetchUrl;
                 if (href === '/') {
                   fetchUrl = '/index.html';
+                } else if (href.endsWith('.html')) {
+                  // .html로 끝나는 경우 그대로 사용
+                  fetchUrl = href;
                 } else {
                   // 슬래시로 끝나는 경우 처리
                   fetchUrl = href.endsWith('/') ? href + 'index.html' : href + '/index.html';
@@ -117,6 +125,9 @@ export default function RootLayout({
                 
                 if (currentPath === '/') {
                   fetchUrl = '/index.html';
+                } else if (currentPath.endsWith('.html')) {
+                  // .html로 끝나는 경우 그대로 사용
+                  fetchUrl = currentPath;
                 } else {
                   fetchUrl = currentPath.endsWith('/') ? currentPath + 'index.html' : currentPath + '/index.html';
                 }
