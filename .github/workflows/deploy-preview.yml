@@ -1,0 +1,140 @@
+name: PR 미리보기 배포
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+
+jobs:
+  deploy-preview:
+    if: github.event.action != 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 코드 체크아웃
+        uses: actions/checkout@v3
+
+      - name: Node.js 설정
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+          
+      - name: 의존성 설치
+        run: npm ci
+        
+      - name: 정적 사이트 빌드
+        run: npm run build
+        
+      - name: AWS 인증 설정
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
+          
+      - name: PR 번호 추출
+        id: pr_number
+        run: echo "pr_number=${{ github.event.pull_request.number }}" >> $GITHUB_OUTPUT
+        
+      - name: S3 미리보기 버킷 설정
+        id: preview_bucket
+        run: |
+          PREVIEW_BUCKET="${{ secrets.AWS_PREVIEW_BUCKET_PREFIX }}-pr-${{ steps.pr_number.outputs.pr_number }}"
+          echo "preview_bucket=$PREVIEW_BUCKET" >> $GITHUB_OUTPUT
+          echo "preview_url=http://$PREVIEW_BUCKET.s3-website.ap-northeast-2.amazonaws.com" >> $GITHUB_OUTPUT
+          
+          # 버킷이 없으면 생성
+          if ! aws s3api head-bucket --bucket $PREVIEW_BUCKET 2>/dev/null; then
+            aws s3 mb s3://$PREVIEW_BUCKET
+            aws s3 website s3://$PREVIEW_BUCKET --index-document index.html --error-document 404.html
+            
+            # 버킷 정책 설정 (공개 읽기 액세스)
+            cat > bucket-policy.json << EOF
+            {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Sid": "PublicReadGetObject",
+                  "Effect": "Allow",
+                  "Principal": "*",
+                  "Action": "s3:GetObject",
+                  "Resource": "arn:aws:s3:::$PREVIEW_BUCKET/*"
+                }
+              ]
+            }
+            EOF
+            
+            aws s3api put-bucket-policy --bucket $PREVIEW_BUCKET --policy file://bucket-policy.json
+          fi
+          
+      - name: S3에 배포
+        run: |
+          aws s3 sync ./out/ s3://${{ steps.preview_bucket.outputs.preview_bucket }} --delete
+          
+      - name: PR에 미리보기 URL 댓글 달기
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { issue: { number: issue_number }, repo: { owner, repo } } = context;
+            const preview_url = "${{ steps.preview_bucket.outputs.preview_url }}";
+            
+            const { data: comments } = await github.rest.issues.listComments({
+              owner,
+              repo,
+              issue_number
+            });
+            
+            const botComment = comments.find(comment => {
+              return comment.user.type === 'Bot' && comment.body.includes('미리보기 환경이 배포되었습니다');
+            });
+            
+            const body = `### 🚀 미리보기 환경이 배포되었습니다\n\n미리보기 URL: ${preview_url}\n\n현재 PR의 최신 변경사항이 위 URL에 반영되었습니다.`;
+            
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner,
+                repo,
+                comment_id: botComment.id,
+                body
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number,
+                body
+              });
+            }
+
+  cleanup-preview:
+    if: github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      - name: AWS 인증 설정
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
+          
+      - name: PR 번호 추출
+        id: pr_number
+        run: echo "pr_number=${{ github.event.pull_request.number }}" >> $GITHUB_OUTPUT
+        
+      - name: S3 미리보기 버킷 설정
+        id: preview_bucket
+        run: |
+          PREVIEW_BUCKET="${{ secrets.AWS_PREVIEW_BUCKET_PREFIX }}-pr-${{ steps.pr_number.outputs.pr_number }}"
+          echo "preview_bucket=$PREVIEW_BUCKET" >> $GITHUB_OUTPUT
+          
+      - name: S3 버킷 비우기 및 삭제
+        run: |
+          # 버킷이 존재하는지 확인
+          if aws s3api head-bucket --bucket ${{ steps.preview_bucket.outputs.preview_bucket }} 2>/dev/null; then
+            # 버킷 비우기
+            aws s3 rm s3://${{ steps.preview_bucket.outputs.preview_bucket }} --recursive
+            # 버킷 삭제
+            aws s3 rb s3://${{ steps.preview_bucket.outputs.preview_bucket }} --force
+          else
+            echo "미리보기 버킷이 존재하지 않습니다."
+          fi 
