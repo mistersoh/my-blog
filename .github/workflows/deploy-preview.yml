@@ -48,36 +48,27 @@ jobs:
           echo "preview_bucket=$PREVIEW_BUCKET" >> $GITHUB_OUTPUT
           echo "preview_url=http://$PREVIEW_BUCKET.s3-website.ap-northeast-2.amazonaws.com" >> $GITHUB_OUTPUT
           
-          # 버킷이 없으면 생성
+          # 버킷이 존재하는지 확인
           if ! aws s3api head-bucket --bucket $PREVIEW_BUCKET 2>/dev/null; then
-            # 버킷 생성
-            aws s3 mb s3://$PREVIEW_BUCKET
+            echo "새 버킷 생성: $PREVIEW_BUCKET"
             
-            # 객체 소유권 설정을 "버킷 소유자 선호"로 변경 - ACL 활성화
-            aws s3api put-bucket-ownership-controls --bucket $PREVIEW_BUCKET --ownership-controls="Rules=[{ObjectOwnership=BucketOwnerPreferred}]"
+            # 버킷 생성 
+            aws s3 mb s3://$PREVIEW_BUCKET
             
             # Block Public Access 설정 비활성화 (버킷 레벨)
             aws s3api put-public-access-block --bucket $PREVIEW_BUCKET --public-access-block-configuration "BlockPublicAcls=false,IgnorePublicAcls=false,BlockPublicPolicy=false,RestrictPublicBuckets=false"
             
-            # 버킷 정책 설정 (공개 읽기 액세스) - 더 명확한 정책
-            echo '{
-              "Version": "2012-10-17",
-              "Statement": [
-                {
-                  "Sid": "PublicReadGetObject",
-                  "Effect": "Allow",
-                  "Principal": "*",
-                  "Action": [
-                    "s3:GetObject"
-                  ],
-                  "Resource": [
-                    "arn:aws:s3:::'$PREVIEW_BUCKET'/*"
-                  ]
-                }
-              ]
-            }' > bucket-policy.json
+            # 버킷 정책 설정 (공개 읽기 액세스) - JSON을 단일 줄로 처리
+            echo '{"Version":"2012-10-17","Statement":[{"Sid":"PublicReadGetObject","Effect":"Allow","Principal":"*","Action":"s3:GetObject","Resource":"arn:aws:s3:::'$PREVIEW_BUCKET'/*"}]}' > bucket-policy.json
             
+            # 버킷 정책 적용
             aws s3api put-bucket-policy --bucket $PREVIEW_BUCKET --policy file://bucket-policy.json
+            
+            # 정책 적용 확인
+            echo "버킷 정책 확인:"
+            aws s3api get-bucket-policy --bucket $PREVIEW_BUCKET
+          else
+            echo "기존 버킷 사용: $PREVIEW_BUCKET"
           fi
           
       # S3 웹사이트 설정 업데이트
@@ -85,22 +76,14 @@ jobs:
         run: |
           aws s3 website s3://${{ steps.preview_bucket.outputs.preview_bucket }} --index-document index.html --error-document 404.html
           
-      # out 폴더의 모든 콘텐츠를 S3에 동기화 (ACL 추가)
+      # out 폴더의 모든 콘텐츠를 S3에 동기화 (ACL 사용 안함)
       - name: S3에 배포
         run: |
-          # public-read ACL을 사용하여 모든 파일을 업로드
-          aws s3 sync ./out/ s3://${{ steps.preview_bucket.outputs.preview_bucket }} --delete --acl public-read
+          # ACL을 사용하지 않고 파일 업로드
+          aws s3 sync ./out/ s3://${{ steps.preview_bucket.outputs.preview_bucket }} --delete
           
-          # index.html 및 404.html 파일의 콘텐츠 타입 확인
-          aws s3 cp s3://${{ steps.preview_bucket.outputs.preview_bucket }}/index.html s3://${{ steps.preview_bucket.outputs.preview_bucket }}/index.html --content-type "text/html" --metadata-directive REPLACE --acl public-read
-          aws s3 cp s3://${{ steps.preview_bucket.outputs.preview_bucket }}/404.html s3://${{ steps.preview_bucket.outputs.preview_bucket }}/404.html --content-type "text/html" --metadata-directive REPLACE --acl public-read
-          
-          # 버킷 정책 및 웹사이트 설정 확인
-          echo "버킷 정책 확인:"
-          aws s3api get-bucket-policy --bucket ${{ steps.preview_bucket.outputs.preview_bucket }} || echo "버킷 정책이 없습니다"
-          
-          echo "웹사이트 설정 확인:"
-          aws s3api get-bucket-website --bucket ${{ steps.preview_bucket.outputs.preview_bucket }} || echo "웹사이트 설정이 없습니다"
+          # 배포 로그
+          echo "배포 완료 - 미리보기 URL: ${{ steps.preview_bucket.outputs.preview_url }}"
           
       - name: PR에 미리보기 URL 댓글 달기
         uses: actions/github-script@v6
