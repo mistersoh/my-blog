@@ -1,0 +1,52 @@
+name: 블로그 포스트 날짜 업데이트
+
+on:
+  pull_request:
+    paths:
+      - "content/blog/**/*.md"
+      - "content/blog/**/*.mdx"
+
+jobs:
+  update-dates:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 코드 체크아웃
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Node.js 설정
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: 변경된 파일 확인
+        id: changed-files
+        run: |
+          # PR 브랜치와 베이스 브랜치 사이의 병합 베이스 확인
+          MERGE_BASE=$(git merge-base origin/${{ github.event.pull_request.base.ref }} HEAD)
+          # 병합 베이스와 현재 HEAD 사이의 변경된 파일 목록 가져오기
+          CHANGED_FILES=$(git diff --name-only "$MERGE_BASE" HEAD)
+          echo "files<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGED_FILES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          echo "변경된 파일:"
+          echo "$CHANGED_FILES"
+
+      - name: 의존성 설치
+        run: |
+          npm install gray-matter
+
+      - name: 변경된 마크다운 파일 날짜 정보 업데이트
+        run: node .github/scripts/update-date.js "${{ steps.changed-files.outputs.files }}"
+
+      - name: 변경사항 커밋 및 푸시
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git add content
+          git commit -m "블로그 포스트 날짜 정보 업데이트" || echo "커밋할 변경사항 없음"
+          git push origin HEAD:${{ github.head_ref }} 

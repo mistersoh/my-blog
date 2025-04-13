@@ -11,4 +11,9 @@ export interface Post extends PostFrontMatter {
   slug?: string;
   content?: string;
   contentHtml?: string;
+}
+
+export interface Tag {
+  name: string;
+  count: number;
 } 
