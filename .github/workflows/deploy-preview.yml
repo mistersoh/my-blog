@@ -53,13 +53,13 @@ jobs:
             # 버킷 생성
             aws s3 mb s3://$PREVIEW_BUCKET
             
-            # Block Public Access 설정 비활성화
+            # Block Public Access 설정 비활성화 (버킷 레벨)
             aws s3api put-public-access-block --bucket $PREVIEW_BUCKET --public-access-block-configuration "BlockPublicAcls=false,IgnorePublicAcls=false,BlockPublicPolicy=false,RestrictPublicBuckets=false"
             
             # 웹사이트 설정
             aws s3 website s3://$PREVIEW_BUCKET --index-document index.html --error-document 404.html
             
-            # 버킷 정책 설정 (공개 읽기 액세스)
+            # 보다 간단한 버킷 정책 설정 (공개 읽기 액세스)
             echo '{
               "Version": "2012-10-17",
               "Statement": [
@@ -78,7 +78,20 @@ jobs:
           
       - name: S3에 배포
         run: |
-          aws s3 sync ./out/ s3://${{ steps.preview_bucket.outputs.preview_bucket }} --delete
+          # 파일 업로드 시 public-read ACL 설정을 추가하여 모든 파일에 대한 공개 읽기 권한 부여
+          aws s3 sync ./out/ s3://${{ steps.preview_bucket.outputs.preview_bucket }} --delete --acl public-read
+          
+          # 모든 HTML 파일에 콘텐츠 타입 설정
+          aws s3 cp s3://${{ steps.preview_bucket.outputs.preview_bucket }}/ s3://${{ steps.preview_bucket.outputs.preview_bucket }}/ --recursive --exclude "*" --include "*.html" --content-type "text/html" --metadata-directive REPLACE --acl public-read
+          
+          # 모든 CSS 파일에 콘텐츠 타입 설정
+          aws s3 cp s3://${{ steps.preview_bucket.outputs.preview_bucket }}/ s3://${{ steps.preview_bucket.outputs.preview_bucket }}/ --recursive --exclude "*" --include "*.css" --content-type "text/css" --metadata-directive REPLACE --acl public-read
+          
+          # 모든 JS 파일에 콘텐츠 타입 설정
+          aws s3 cp s3://${{ steps.preview_bucket.outputs.preview_bucket }}/ s3://${{ steps.preview_bucket.outputs.preview_bucket }}/ --recursive --exclude "*" --include "*.js" --content-type "application/javascript" --metadata-directive REPLACE --acl public-read
+          
+          # 정적 웹사이트 설정 확인
+          aws s3api get-bucket-website --bucket ${{ steps.preview_bucket.outputs.preview_bucket }} || aws s3 website s3://${{ steps.preview_bucket.outputs.preview_bucket }} --index-document index.html --error-document 404.html
           
       - name: PR에 미리보기 URL 댓글 달기
         uses: actions/github-script@v6
