@@ -16,15 +16,15 @@ export default function Home() {
   return (
     <div className="max-w-4xl mx-auto">
       <section className="mb-10">
-        <h1 className="text-4xl font-bold mb-6">마크다운 기반 정적 웹사이트에 오신 것을 환영합니다</h1>
+        <h1 className="text-4xl font-bold mb-6">사이트에 방문해 주신 여러분들 환영합니다.</h1>
         <p className="text-xl text-gray-600 mb-6">
-          이 웹사이트는 마크다운 파일을 콘텐츠로 사용하는 정적 웹사이트입니다.
+          저의 이력서와 개인적인 블로그 포스트가 담긴 마크다운 파일을 콘텐츠로 사용하는 정적 웹사이트입니다.
           AWS S3에 배포되어 있으며, GitHub을 통한 CI/CD 파이프라인이 구성되어 있습니다.
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-blue-50 p-6 rounded-lg shadow-sm">
             <h2 className="text-2xl font-bold mb-3">이력서</h2>
-            <p className="mb-4">전문적인 이력서를 확인해보세요.</p>
+            <p className="mb-4">저의 경험이 담긴 이력서입니다.</p>
             <a 
               href="/resume/" 
               target="_self"

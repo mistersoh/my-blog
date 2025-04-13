@@ -26,7 +26,7 @@ export default function RootLayout({
         <header className="bg-gray-800 text-white p-4">
           <div className="container mx-auto flex justify-between items-center">
             <h1 className="text-xl font-bold">
-              <a href="/" target="_self" className="nav-link">정적 웹사이트</a>
+              <a href="/" target="_self" className="nav-link">Mistersoh's blog</a>
             </h1>
             <nav>
               <ul className="flex space-x-4">

@@ -12,7 +12,7 @@ website: 'https://www.linkedin.com/in/wonwoo-soh-62baa61a2'
 
 ## 개인정보
 - 서울, 대한민국 | 010-8243-1031 | [mistersoh@naver.com](mailto:mistersoh@naver.com)
-- [링크드인](https://www.linkedin.com/in/wonwoo-soh-62baa61a2) | [포트폴리오](https://www.notion.so/My-works-22ac7d69b79b4dfe8454094276cadb64?pvs=21) | [깃허브](https://github.com/mistersoh?tab=repositories)
+- [링크드인](https://www.linkedin.com/in/wonwoo-soh-62baa61a2) | [포트폴리오](https://mistersoh.notion.site/My-works-22ac7d69b79b4dfe8454094276cadb64) | [깃허브](https://github.com/mistersoh?tab=repositories)
 
 ## 경력 사항
 

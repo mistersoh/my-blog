@@ -12,7 +12,7 @@ With a Master's degree in AI and Computer Science specializing in computer visio
 
 ## Personal Info
 - Seoul, South Korea | +82 010-8243-1031 | [mistersoh@naver.com](mailto:mistersoh@naver.com)
-- [LinkedIn](https://www.linkedin.com/in/wonwoo-soh-62baa61a2) | [Portfolio](https://www.notion.so/My-works-22ac7d69b79b4dfe8454094276cadb64?pvs=21) | [GitHub](https://github.com/mistersoh?tab=repositories)
+- [LinkedIn](https://www.linkedin.com/in/wonwoo-soh-62baa61a2) | [Portfolio](https://mistersoh.notion.site/My-works-22ac7d69b79b4dfe8454094276cadb64) | [GitHub](https://github.com/mistersoh?tab=repositories)
 
 ## PROFESSIONAL EXPERIENCE
 
@@ -54,7 +54,7 @@ With a Master's degree in AI and Computer Science specializing in computer visio
 ## RESEARCHES
 
 > **MiRo Robot Football Development**
-- Developed autonomous capabilities for animal therapy robot to play soccer
+- Developed autonomous capabilities for animal therapy robot to play football
 - Used OpenCV for object detection and ROS/PID control for motion research
 - [GitHub](https://github.com/mistersoh/Miro_motion_control)
 
