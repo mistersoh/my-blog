@@ -4,6 +4,12 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, closed]
 
+# GitHub API에 접근하기 위한 권한 설정
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
 jobs:
   deploy-preview:
     if: github.event.action != 'closed'
