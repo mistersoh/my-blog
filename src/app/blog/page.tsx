@@ -1,17 +1,9 @@
 import React from 'react';
 import { getBlogPosts } from '@/lib/markdown';
-
-// 블로그 포스트 타입 정의
-interface BlogPost {
-  id: string;
-  title: string;
-  date: string;
-  description: string;
-  [key: string]: any;
-}
+import { Post } from '@/types/post';
 
 export default function BlogPage() {
-  const posts = getBlogPosts() as BlogPost[];
+  const posts = getBlogPosts();
 
   return (
     <div className="max-w-4xl mx-auto">

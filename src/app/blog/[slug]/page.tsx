@@ -1,15 +1,6 @@
 import React from 'react';
 import { getBlogPost, getBlogPosts } from '@/lib/markdown';
-
-// 블로그 포스트 타입 정의
-interface BlogPost {
-  id: string;
-  contentHtml: string;
-  title: string;
-  date: string;
-  description: string;
-  [key: string]: any;
-}
+import { Post } from '@/types/post';
 
 // 정적 페이지 경로 생성
 export async function generateStaticParams() {
@@ -21,7 +12,7 @@ export async function generateStaticParams() {
 }
 
 export default async function BlogPostPage({ params }: { params: { slug: string } }) {
-  const post = await getBlogPost(params.slug) as BlogPost;
+  const post = await getBlogPost(params.slug);
   
   return (
     <div className="max-w-4xl mx-auto">
