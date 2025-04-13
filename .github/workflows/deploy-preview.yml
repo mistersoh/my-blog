@@ -44,7 +44,13 @@ jobs:
           
           # 버킷이 없으면 생성
           if ! aws s3api head-bucket --bucket $PREVIEW_BUCKET 2>/dev/null; then
+            # 버킷 생성
             aws s3 mb s3://$PREVIEW_BUCKET
+            
+            # Block Public Access 설정 비활성화
+            aws s3api put-public-access-block --bucket $PREVIEW_BUCKET --public-access-block-configuration "BlockPublicAcls=false,IgnorePublicAcls=false,BlockPublicPolicy=false,RestrictPublicBuckets=false"
+            
+            # 웹사이트 설정
             aws s3 website s3://$PREVIEW_BUCKET --index-document index.html --error-document 404.html
             
             # 버킷 정책 설정 (공개 읽기 액세스)
