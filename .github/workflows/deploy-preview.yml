@@ -78,17 +78,13 @@ jobs:
           
       - name: S3에 배포
         run: |
-          # 파일 업로드 시 public-read ACL 설정을 추가하여 모든 파일에 대한 공개 읽기 권한 부여
-          aws s3 sync ./out/ s3://${{ steps.preview_bucket.outputs.preview_bucket }} --delete --acl public-read
+          # ACL 없이 파일 업로드 (버킷 정책만 사용)
+          aws s3 sync ./out/ s3://${{ steps.preview_bucket.outputs.preview_bucket }} --delete
           
-          # 모든 HTML 파일에 콘텐츠 타입 설정
-          aws s3 cp s3://${{ steps.preview_bucket.outputs.preview_bucket }}/ s3://${{ steps.preview_bucket.outputs.preview_bucket }}/ --recursive --exclude "*" --include "*.html" --content-type "text/html" --metadata-directive REPLACE --acl public-read
-          
-          # 모든 CSS 파일에 콘텐츠 타입 설정
-          aws s3 cp s3://${{ steps.preview_bucket.outputs.preview_bucket }}/ s3://${{ steps.preview_bucket.outputs.preview_bucket }}/ --recursive --exclude "*" --include "*.css" --content-type "text/css" --metadata-directive REPLACE --acl public-read
-          
-          # 모든 JS 파일에 콘텐츠 타입 설정
-          aws s3 cp s3://${{ steps.preview_bucket.outputs.preview_bucket }}/ s3://${{ steps.preview_bucket.outputs.preview_bucket }}/ --recursive --exclude "*" --include "*.js" --content-type "application/javascript" --metadata-directive REPLACE --acl public-read
+          # 콘텐츠 타입 설정 (ACL 없이)
+          aws s3 cp s3://${{ steps.preview_bucket.outputs.preview_bucket }}/ s3://${{ steps.preview_bucket.outputs.preview_bucket }}/ --recursive --exclude "*" --include "*.html" --content-type "text/html" --metadata-directive REPLACE
+          aws s3 cp s3://${{ steps.preview_bucket.outputs.preview_bucket }}/ s3://${{ steps.preview_bucket.outputs.preview_bucket }}/ --recursive --exclude "*" --include "*.css" --content-type "text/css" --metadata-directive REPLACE
+          aws s3 cp s3://${{ steps.preview_bucket.outputs.preview_bucket }}/ s3://${{ steps.preview_bucket.outputs.preview_bucket }}/ --recursive --exclude "*" --include "*.js" --content-type "application/javascript" --metadata-directive REPLACE
           
           # 정적 웹사이트 설정 확인
           aws s3api get-bucket-website --bucket ${{ steps.preview_bucket.outputs.preview_bucket }} || aws s3 website s3://${{ steps.preview_bucket.outputs.preview_bucket }} --index-document index.html --error-document 404.html
