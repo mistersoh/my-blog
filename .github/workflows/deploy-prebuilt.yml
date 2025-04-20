@@ -5,6 +5,10 @@ on:
     branches:
       - main
 
+# GitHub Actions 권한 설정
+permissions:
+  contents: read  # S3에 배포만 하므로 읽기 권한만 필요
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
