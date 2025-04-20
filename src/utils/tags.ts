@@ -35,12 +35,32 @@ export function getPostsByTag(tag: string): Post[] {
   const posts = getBlogPosts();
   
   // 태그 이름 정규화 (대소문자 무시, 공백 정규화)
-  const normalizeTag = (t: string) => t.toLowerCase().trim();
-  const normalizedTag = normalizeTag(tag);
+  const normalizeTag = (t: string) => {
+    if (!t) return '';
+    // 공백 정규화 및 대소문자 무시
+    return t.trim().toLowerCase()
+      // 여러 공백을 하나로 정규화
+      .replace(/\s+/g, ' ');
+  };
   
-  return posts.filter(({ tags }) => 
-    tags?.some((x) => normalizeTag(x) === normalizedTag)
-  );
+  const normalizedTag = normalizeTag(tag);
+  console.log('Searching for normalized tag:', normalizedTag);
+  
+  return posts.filter(post => {
+    if (!post.tags || !Array.isArray(post.tags)) return false;
+    
+    // 디버깅용 로그
+    console.log('Post ID:', post.id, 'Tags:', post.tags.map(t => `"${t}"(${normalizeTag(t)})`).join(', '));
+    
+    return post.tags.some(postTag => {
+      const normalizedPostTag = normalizeTag(postTag);
+      const isMatch = normalizedPostTag === normalizedTag;
+      if (isMatch) {
+        console.log('Match found!', postTag, '(normalized:', normalizedPostTag, ') === ', normalizedTag);
+      }
+      return isMatch;
+    });
+  });
 }
 
 /**

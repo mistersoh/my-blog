@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { getPostsByTag, getTags } from '@/utils/tags';
+import { getBlogPosts } from '@/lib/markdown';
 import { Metadata } from 'next';
 
 interface TagPageProps {
@@ -20,16 +21,29 @@ export async function generateMetadata({ params }: TagPageProps): Promise<Metada
 
 export async function generateStaticParams() {
   const tags = getTags();
-  return tags.map((tag) => ({
-    tag: encodeURIComponent(tag.name),
-  }));
+  console.log('All tags for static generation:', tags.map(t => t.name));
+  return tags.map((tag) => {
+    const encodedTag = encodeURIComponent(tag.name);
+    console.log(`Tag "${tag.name}" encoded as "${encodedTag}"`);
+    return {
+      tag: encodedTag,
+    };
+  });
 }
 
 export default function TagPage({ params }: TagPageProps) {
   const { tag } = params;
   const decodedTag = decodeURIComponent(tag);
+  console.log('Original tag parameter:', tag);
+  console.log('Decoded tag:', decodedTag);
+  
   const posts = getPostsByTag(decodedTag);
-
+  console.log('Found posts:', posts.length);
+  
+  // 모든 태그 확인을 위한 디버깅 정보
+  const allPosts = getBlogPosts();
+  console.log('All tags in posts:', allPosts.flatMap(post => post.tags || []).filter(Boolean));
+  
   return (
     <div className="max-w-4xl mx-auto py-8">
       <header className="mb-12">
@@ -37,6 +51,7 @@ export default function TagPage({ params }: TagPageProps) {
           <span className="text-blue-600">{decodedTag}</span> 태그의 포스트
         </h1>
         <p className="text-gray-600 text-center">총 {posts.length}개의 포스트</p>
+        <p className="text-gray-500 text-center">태그 디버그: [{tag}] → [{decodedTag}]</p>
       </header>
       
       {posts.length > 0 ? (
