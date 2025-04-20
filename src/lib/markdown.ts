@@ -8,6 +8,30 @@ import { Post, PostFrontMatter } from '@/types/post';
 // 콘텐츠 디렉토리 경로 설정
 const contentDirectory = path.join(process.cwd(), 'content');
 
+// 날짜 문자열을 유효한 형식으로 변환하는 함수
+function formatDate(dateStr: string): string {
+  // 날짜 형식이 없거나 유효하지 않은 경우 현재 날짜 반환
+  if (!dateStr) return new Date().toISOString();
+  
+  // 날짜 형식이 YYYY-MM-DD인지 확인
+  const datePattern = /^\d{4}-\d{2}-\d{2}$/;
+  if (datePattern.test(dateStr)) {
+    return dateStr;
+  }
+  
+  try {
+    // 날짜 문자열을 Date 객체로 변환하고 다시 ISO 문자열로 변환
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) {
+      return new Date().toISOString();
+    }
+    return date.toISOString();
+  } catch (error) {
+    console.error(`Invalid date format: ${dateStr}`, error);
+    return new Date().toISOString();
+  }
+}
+
 // 블로그 포스트 가져오기
 export function getBlogPosts(): Post[] {
   const postsDirectory = path.join(contentDirectory, 'blog');
@@ -32,6 +56,11 @@ export function getBlogPosts(): Post[] {
     
     // gray-matter로 메타데이터 섹션 파싱
     const matterResult = matter(fileContents);
+    
+    // 날짜 형식 처리
+    if (matterResult.data.date) {
+      matterResult.data.date = formatDate(matterResult.data.date);
+    }
     
     return {
       id: dirName,
@@ -75,6 +104,11 @@ export async function getBlogPost(id: string): Promise<Post & { contentHtml: str
   
   // gray-matter로 메타데이터 섹션 파싱
   const matterResult = matter(fileContents);
+  
+  // 날짜 형식 처리
+  if (matterResult.data.date) {
+    matterResult.data.date = formatDate(matterResult.data.date);
+  }
   
   // remark로 마크다운을 HTML로 변환
   const processedContent = await remark()
