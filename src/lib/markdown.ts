@@ -14,14 +14,18 @@ export function getBlogPosts(): Post[] {
   const dirNames = fs.readdirSync(postsDirectory);
   
   return dirNames.map((dirName) => {
-    // 디렉토리 내의 index.md 파일 경로
-    const fullPath = path.join(postsDirectory, dirName, 'index.md');
+    // 디렉토리 내의 index.md 또는 index.mdx 파일 경로
+    const mdPath = path.join(postsDirectory, dirName, 'index.md');
+    const mdxPath = path.join(postsDirectory, dirName, 'index.mdx');
     
-    // 디렉토리가 아니거나 index.md 파일이 없는 경우 건너뛰기
+    // 디렉토리가 아니거나 index.md/index.mdx 파일이 없는 경우 건너뛰기
     if (!fs.statSync(path.join(postsDirectory, dirName)).isDirectory() || 
-        !fs.existsSync(fullPath)) {
+        (!fs.existsSync(mdPath) && !fs.existsSync(mdxPath))) {
       return null;
     }
+    
+    // 존재하는 파일 경로 선택
+    const fullPath = fs.existsSync(mdxPath) ? mdxPath : mdPath;
     
     // 마크다운 파일을 문자열로 읽기
     const fileContents = fs.readFileSync(fullPath, 'utf8');
@@ -54,9 +58,16 @@ export function getResume(locale = 'en'): PostFrontMatter & { content: string } 
 // 특정 블로그 포스트 가져오기
 export async function getBlogPost(id: string): Promise<Post & { contentHtml: string }> {
   const postsDirectory = path.join(contentDirectory, 'blog');
-  const fullPath = path.join(postsDirectory, id, 'index.md');
+  const mdPath = path.join(postsDirectory, id, 'index.md');
+  const mdxPath = path.join(postsDirectory, id, 'index.mdx');
   
-  if (!fs.existsSync(fullPath)) {
+  // 존재하는 파일 경로 선택
+  let fullPath;
+  if (fs.existsSync(mdxPath)) {
+    fullPath = mdxPath;
+  } else if (fs.existsSync(mdPath)) {
+    fullPath = mdPath;
+  } else {
     throw new Error(`포스트 ${id}를 찾을 수 없습니다.`);
   }
   
