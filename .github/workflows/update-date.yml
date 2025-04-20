@@ -6,6 +6,10 @@ on:
       - "content/blog/**/*.md"
       - "content/blog/**/*.mdx"
 
+# GitHub Actions 기본 토큰에 쓰기 권한 부여
+permissions:
+  contents: write
+
 jobs:
   update-dates:
     runs-on: ubuntu-latest
