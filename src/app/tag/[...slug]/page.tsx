@@ -6,52 +6,68 @@ import { Metadata } from 'next';
 
 interface TagPageProps {
   params: {
-    tag: string;
+    slug: string[];
   };
 }
 
 export async function generateMetadata({ params }: TagPageProps): Promise<Metadata> {
-  const { tag } = params;
-  const decodedTag = decodeURIComponent(tag);
+  const { slug } = params;
+  const tagName = slug.join('/');
+  
   return {
-    title: `${decodedTag} 태그의 포스트 - My Blog`,
-    description: `${decodedTag} 태그를 가진 포스트 목록입니다.`,
+    title: `${tagName} 태그의 포스트 - My Blog`,
+    description: `${tagName} 태그를 가진 포스트 목록입니다.`,
   };
 }
 
 export async function generateStaticParams() {
   const tags = getTags();
-  console.log('All tags for static generation:', tags.map(t => t.name));
-  return tags.map((tag) => {
-    const encodedTag = encodeURIComponent(tag.name);
-    console.log(`Tag "${tag.name}" encoded as "${encodedTag}"`);
-    return {
-      tag: encodedTag,
-    };
-  });
+  
+  // 각 태그에 대해 가능한 모든 경로를 생성
+  const params = [];
+  
+  for (const tag of tags) {
+    // 1. 태그 이름에 공백이 있는 경우 (예: "Vibe Coding")
+    if (tag.name.includes(' ')) {
+      // 전체 이름을 단일 세그먼트로 (예: slug: ["Vibe Coding"])
+      params.push({ slug: [tag.name] });
+      
+      // URL 인코딩된 버전 (예: slug: ["Vibe%20Coding"])
+      params.push({ slug: [encodeURIComponent(tag.name)] });
+    } else {
+      // 2. 일반 태그 (공백 없음)
+      params.push({ slug: [tag.name] });
+    }
+  }
+  
+  return params;
 }
 
 export default function TagPage({ params }: TagPageProps) {
-  const { tag } = params;
-  const decodedTag = decodeURIComponent(tag);
-  console.log('Original tag parameter:', tag);
-  console.log('Decoded tag:', decodedTag);
+  const { slug } = params;
+  // 모든 슬러그 세그먼트를 결합하여 태그 이름 생성
+  let tagName = slug.join('/');
   
-  const posts = getPostsByTag(decodedTag);
-  console.log('Found posts:', posts.length);
+  // URL 디코딩 (필요한 경우)
+  try {
+    // 이미 디코딩되었는지 확인
+    const decoded = decodeURIComponent(tagName);
+    if (decoded !== tagName) {
+      tagName = decoded;
+    }
+  } catch (e) {
+    // 디코딩 오류 무시 (이미 디코딩되어 있음)
+  }
   
-  // 모든 태그 확인을 위한 디버깅 정보
-  const allPosts = getBlogPosts();
-  console.log('All tags in posts:', allPosts.flatMap(post => post.tags || []).filter(Boolean));
+  const posts = getPostsByTag(tagName);
   
   return (
     <div className="max-w-4xl mx-auto py-8">
       <header className="mb-12">
         <h1 className="text-3xl font-bold mb-4 text-center">
-          <span className="text-blue-600">{decodedTag}</span> 태그의 포스트
+          <span className="text-blue-600">{tagName}</span> 태그의 포스트
         </h1>
         <p className="text-gray-600 text-center">총 {posts.length}개의 포스트</p>
-        <p className="text-gray-500 text-center">태그 디버그: [{tag}] → [{decodedTag}]</p>
       </header>
       
       {posts.length > 0 ? (
@@ -82,17 +98,17 @@ export default function TagPage({ params }: TagPageProps) {
               )}
               {post.tags && post.tags.length > 0 && (
                 <div className="flex flex-wrap gap-2">
-                  {post.tags.map((tagName) => (
+                  {post.tags.map((tagText) => (
                     <Link 
-                      key={tagName} 
-                      href={`/tag/${encodeURIComponent(tagName)}`} 
+                      key={tagText} 
+                      href={`/tag/${tagText}`}
                       className={`text-sm bg-gray-100 px-3 py-1 rounded-full ${
-                        tagName.toLowerCase() === decodedTag.toLowerCase() 
+                        tagText === tagName 
                           ? 'bg-blue-100 text-blue-800' 
                           : 'text-gray-700 hover:bg-gray-200'
                       }`}
                     >
-                      {tagName}
+                      {tagText}
                     </Link>
                   ))}
                 </div>

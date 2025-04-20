@@ -21,7 +21,7 @@ export default function BlogPage() {
       {tags.length > 0 && (
         <div className="flex flex-wrap gap-2 mb-6">
           {tags.slice(0, 10).map((tag) => (
-            <Link key={tag.name} href={`/tag/${encodeURIComponent(tag.name)}`}>
+            <Link key={tag.name} href={`/tag/${tag.name}`}>
               <Chip>{tag.name} ({tag.count})</Chip>
             </Link>
           ))}
@@ -60,7 +60,7 @@ export default function BlogPage() {
             {post.tags && post.tags.length > 0 && (
               <div className="flex flex-wrap gap-2 mb-3">
                 {post.tags.map((tag) => (
-                  <Link key={tag} href={`/tag/${encodeURIComponent(tag)}`}>
+                  <Link key={tag} href={`/tag/${tag}`}>
                     <Chip>{tag}</Chip>
                   </Link>
                 ))}

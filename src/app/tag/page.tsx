@@ -16,6 +16,12 @@ export default function TagsPage() {
     a.name.localeCompare(b.name, 'ko-KR')
   );
 
+  const baseClasses = 'px-3 py-1 rounded-full transition-colors bg-gray-100 hover:bg-blue-50 text-blue-600 font-medium';
+  const getWeightClasses = (weight: number) => {
+    const size = 0.875 + weight * 0.125;
+    return `text-${Math.round(14 + weight * 2)}`;
+  };
+
   return (
     <div className="max-w-4xl mx-auto py-8">
       <header className="mb-12">
@@ -29,14 +35,12 @@ export default function TagsPage() {
             {sortedTags.map((tag) => (
               <Link 
                 key={tag.name} 
-                href={`/tag/${encodeURIComponent(tag.name)}`}
-                className={`
-                  px-3 py-1 rounded-full transition-colors
-                  bg-gray-100 hover:bg-blue-50 
-                  text-blue-600 font-medium
-                  text-${14 + tag.weight * 2}
-                `}
-                style={{ fontSize: `${0.875 + tag.weight * 0.125}rem` }}
+                href={`/tag/${tag.name}`}
+                className={`${
+                  baseClasses
+                } ${
+                  getWeightClasses(tag.weight)
+                }`}
               >
                 {tag.name} <span className="text-gray-500">({tag.count})</span>
               </Link>

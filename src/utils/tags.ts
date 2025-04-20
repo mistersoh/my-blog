@@ -44,21 +44,13 @@ export function getPostsByTag(tag: string): Post[] {
   };
   
   const normalizedTag = normalizeTag(tag);
-  console.log('Searching for normalized tag:', normalizedTag);
   
   return posts.filter(post => {
     if (!post.tags || !Array.isArray(post.tags)) return false;
     
-    // 디버깅용 로그
-    console.log('Post ID:', post.id, 'Tags:', post.tags.map(t => `"${t}"(${normalizeTag(t)})`).join(', '));
-    
     return post.tags.some(postTag => {
       const normalizedPostTag = normalizeTag(postTag);
-      const isMatch = normalizedPostTag === normalizedTag;
-      if (isMatch) {
-        console.log('Match found!', postTag, '(normalized:', normalizedPostTag, ') === ', normalizedTag);
-      }
-      return isMatch;
+      return normalizedPostTag === normalizedTag;
     });
   });
 }
