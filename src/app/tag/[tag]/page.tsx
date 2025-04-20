@@ -11,28 +11,30 @@ interface TagPageProps {
 
 export async function generateMetadata({ params }: TagPageProps): Promise<Metadata> {
   const { tag } = params;
+  const decodedTag = decodeURIComponent(tag);
   return {
-    title: `${tag} 태그의 포스트 - My Blog`,
-    description: `${tag} 태그를 가진 포스트 목록입니다.`,
+    title: `${decodedTag} 태그의 포스트 - My Blog`,
+    description: `${decodedTag} 태그를 가진 포스트 목록입니다.`,
   };
 }
 
 export async function generateStaticParams() {
   const tags = getTags();
   return tags.map((tag) => ({
-    tag: tag.name,
+    tag: encodeURIComponent(tag.name),
   }));
 }
 
 export default function TagPage({ params }: TagPageProps) {
   const { tag } = params;
-  const posts = getPostsByTag(tag);
+  const decodedTag = decodeURIComponent(tag);
+  const posts = getPostsByTag(decodedTag);
 
   return (
     <div className="max-w-4xl mx-auto py-8">
       <header className="mb-12">
         <h1 className="text-3xl font-bold mb-4 text-center">
-          <span className="text-blue-600">{tag}</span> 태그의 포스트
+          <span className="text-blue-600">{decodedTag}</span> 태그의 포스트
         </h1>
         <p className="text-gray-600 text-center">총 {posts.length}개의 포스트</p>
       </header>
@@ -68,9 +70,9 @@ export default function TagPage({ params }: TagPageProps) {
                   {post.tags.map((tagName) => (
                     <Link 
                       key={tagName} 
-                      href={`/tag/${tagName}`} 
+                      href={`/tag/${encodeURIComponent(tagName)}`} 
                       className={`text-sm bg-gray-100 px-3 py-1 rounded-full ${
-                        tagName.toLowerCase() === tag.toLowerCase() 
+                        tagName.toLowerCase() === decodedTag.toLowerCase() 
                           ? 'bg-blue-100 text-blue-800' 
                           : 'text-gray-700 hover:bg-gray-200'
                       }`}

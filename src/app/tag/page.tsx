@@ -29,7 +29,7 @@ export default function TagsPage() {
             {sortedTags.map((tag) => (
               <Link 
                 key={tag.name} 
-                href={`/tag/${tag.name}`}
+                href={`/tag/${encodeURIComponent(tag.name)}`}
                 className={`
                   px-3 py-1 rounded-full transition-colors
                   bg-gray-100 hover:bg-blue-50 
