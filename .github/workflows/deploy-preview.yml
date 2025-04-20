@@ -117,33 +117,15 @@ jobs:
             const { issue: { number: issue_number }, repo: { owner, repo } } = context;
             const preview_url = "${{ steps.preview_bucket.outputs.preview_url }}";
             
-            const { data: comments } = await github.rest.issues.listComments({
+            const timestamp = new Date().toISOString();
+            const body = `### 🚀 미리보기 환경이 배포되었습니다 (${timestamp})\n\n미리보기 URL: ${preview_url}\n\n현재 PR의 최신 변경사항이 위 URL에 반영되었습니다.`;
+            
+            await github.rest.issues.createComment({
               owner,
               repo,
-              issue_number
+              issue_number,
+              body
             });
-            
-            const botComment = comments.find(comment => {
-              return comment.user.type === 'Bot' && comment.body.includes('미리보기 환경이 배포되었습니다');
-            });
-            
-            const body = `### 🚀 미리보기 환경이 배포되었습니다\n\n미리보기 URL: ${preview_url}\n\n현재 PR의 최신 변경사항이 위 URL에 반영되었습니다.`;
-            
-            if (botComment) {
-              await github.rest.issues.updateComment({
-                owner,
-                repo,
-                comment_id: botComment.id,
-                body
-              });
-            } else {
-              await github.rest.issues.createComment({
-                owner,
-                repo,
-                issue_number,
-                body
-              });
-            }
 
   cleanup-preview:
     if: github.event.action == 'closed'
