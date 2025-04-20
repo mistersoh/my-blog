@@ -84,7 +84,7 @@ export default function Home() {
               {post.tags && post.tags.length > 0 && (
                 <div className="flex flex-wrap gap-2">
                   {post.tags.map((tag) => (
-                    <Link key={tag} href={`/tag/${encodeURIComponent(tag)}`}>
+                    <Link key={tag} href={`/tag/${tag}`}>
                       <Chip>{tag}</Chip>
                     </Link>
                   ))}
@@ -103,7 +103,7 @@ export default function Home() {
               {tags.map((tag) => (
                 <Link 
                   key={tag.name} 
-                  href={`/tag/${encodeURIComponent(tag.name)}`}
+                  href={`/tag/${tag.name}`}
                   className="flex items-center"
                 >
                   <Chip>
