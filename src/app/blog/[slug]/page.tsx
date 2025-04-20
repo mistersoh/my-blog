@@ -39,7 +39,18 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
           <h1 className="text-3xl font-bold mb-2">{post.title}</h1>
           <div className="flex flex-wrap items-center gap-2 mb-4">
             <span className="text-gray-500">
-              {new Date(post.date).toLocaleDateString('ko-KR')}
+              {(() => {
+                try {
+                  return new Date(post.date).toLocaleDateString('ko-KR', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                  });
+                } catch (error) {
+                  console.error('날짜 포맷 에러:', error);
+                  return '날짜 없음';
+                }
+              })()}
             </span>
             <span className="text-gray-300 px-2">•</span>
             <span className="text-gray-500">{post.author}</span>

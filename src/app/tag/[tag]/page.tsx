@@ -47,7 +47,18 @@ export default function TagPage({ params }: TagPageProps) {
                 </Link>
               </h2>
               <p className="text-gray-500 mb-2">
-                {new Date(post.date).toLocaleDateString('ko-KR')}
+                {(() => {
+                  try {
+                    return new Date(post.date).toLocaleDateString('ko-KR', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric'
+                    });
+                  } catch (error) {
+                    console.error('날짜 포맷 에러:', error);
+                    return '날짜 없음';
+                  }
+                })()}
               </p>
               {post.description && (
                 <p className="text-gray-600 mb-4">{post.description}</p>

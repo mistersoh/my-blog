@@ -3,7 +3,7 @@ import './globals.css';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: '마크다운 정적 웹사이트',
+  title: "Mistersoh's Blog",
   description: '마크다운 파일을 사용하여 생성된 정적 웹사이트',
 };
 
@@ -42,7 +42,7 @@ export default function RootLayout({
         </main>
         <footer className="bg-gray-800 text-white p-4 mt-8">
           <div className="container mx-auto text-center">
-            <p>&copy; {new Date().getFullYear()} 마크다운 정적 웹사이트. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} Mistersoh's Blog. All rights reserved.</p>
           </div>
         </footer>
 
