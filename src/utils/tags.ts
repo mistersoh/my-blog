@@ -34,8 +34,12 @@ export function getTags(): Tag[] {
 export function getPostsByTag(tag: string): Post[] {
   const posts = getBlogPosts();
   
+  // 태그 이름 정규화 (대소문자 무시, 공백 정규화)
+  const normalizeTag = (t: string) => t.toLowerCase().trim();
+  const normalizedTag = normalizeTag(tag);
+  
   return posts.filter(({ tags }) => 
-    tags?.some((x) => x.toLowerCase() === tag.toLowerCase())
+    tags?.some((x) => normalizeTag(x) === normalizedTag)
   );
 }
 
