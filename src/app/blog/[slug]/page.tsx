@@ -79,7 +79,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
       
       <div className="mt-8 pt-8 border-t">
         <div className="flex justify-between items-center">
-          <Link href="/blog" className="text-blue-600 hover:underline">
+          <Link href="/blog/" className="text-blue-600 hover:underline">
             ← 블로그 목록으로 돌아가기
           </Link>
           
