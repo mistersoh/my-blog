@@ -29,7 +29,9 @@ export const mdxOptions = {
       }
     }],
     [rehypePrettyCode, { 
-      theme: 'github-dark',
+      theme: 'one-dark-pro',
+      keepBackground: true,
+      grid: false,
       onVisitLine(node: Node) {
         // 줄 번호 스타일링
         if (node.children.length === 0) {
@@ -50,7 +52,8 @@ export const mdxOptions = {
           node.properties = { className: [] };
         }
         node.properties.className = ['word'];
-      }
+      },
+      filterMetaString: (string: string) => string.replace(/scale=([\d.]+)/, 'data-font-scale=$1')
     }]
   ]
 };

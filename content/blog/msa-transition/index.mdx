@@ -1,0 +1,501 @@
+---
+title: MSA 구축 시 가이드라인과 실수 및 방지법
+tags:
+  - MSA
+  - Backend
+  - JAVA Spring
+author: 서원우
+date:
+  posted: '2025-04-27T06:18:16.580Z'
+  modified: '2025-04-27T06:18:16.580Z'
+---
+
+안녕하세요.
+
+오늘은 모놀리식 서비스 레포를 MSA로 전환 및 구성하며 겪은 실수와 그에 대한 가이드라인에 대해 알아보겠습니다.
+
+## 목차
+
+1. [서비스 독립성 유지](#1-서비스-독립성-유지)
+2. [동기 호출로 인한 성능 저하](#2-동기-호출로-인한-성능-저하)
+3. [모든 데이터를 중복 저장하려는 시도](#3-모든-데이터를-중복-저장하려는-시도)
+4. [불완전한 에러 처리 및 회복 계획](#4-불완전한-에러-처리-및-회복-계획)
+5. [보안 취약점](#5-보안-취약점)
+6. [불완전한 모니터링 및 로깅](#6-불완전한-모니터링-및-로깅)
+7. [서비스 간 데이터 중복 검증을 하지 않음](#7-서비스-간-데이터-중복-검증을-하지-않음)
+8. [API 문서화와 명세 부족](#8-api-문서화와-명세-부족)
+9. [서비스 간 의존성 과도하게 생성](#9-서비스-간-의존성-과도하게-생성)
+10. [비즈니스 로직의 복잡도 증가](#10-비즈니스-로직의-복잡도-증가)
+
+<a id="서비스-독립성-유지"></a>
+## 1. 서비스 독립성 유지
+
+### **가이드라인**
+
+- 각 서비스는 **독립적인 DB**와 **자체 엔티티**를 관리합니다.
+- 서비스 간 데이터 참조는 **API 호출** 또는 **이벤트 기반 동기화**로 처리합니다.
+
+### **실수**
+
+서비스가 서로의 DB나 엔티티를 **직접 참조**하는 경우가 있습니다.
+
+### **실제 사례**
+- 기존 모놀리식(Spring JPA) 환경에서는 한 레포 내에서 여러 서비스, 엔티티들이 디렉토리별로 구성되어 있었습니다.
+- 엔티티 간 `@OneToMany`, `@ManyToOne` 등을 통해 자유롭게 관계를 맺었습니다.
+- MSA 전환으로 각 서비스가 독립 레포로 분리되었습니다. 각자의 엔티티도 따로 존재합니다.
+- 이때 엔티티 간 참조 문제가 발생하여 공통 모듈에 엔티티를 몰아넣는 방안을 고민하게 되었습니다.
+
+
+### **방지법**
+
+- 엔티티를 공통 모듈로 몰아넣는 것은 **MSA의 독립성 철학에 어긋납니다**.
+- 서비스 간 데이터 참조는 **ID만 저장**하고 필요 시 **API 호출** 또는 **이벤트/데이터 복제**로 해결해야 합니다.
+- 각 서비스는 **독립적으로 데이터와 DB를 소유**해야 합니다.
+
+### **코드 예시**
+
+```java
+// UserService.java (서비스 A)
+public class UserService {
+    private final UserRepository userRepository;
+
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    public UserDTO getUserDetails(Long userId) {
+        // 다른 서비스의 엔티티 참조 대신 DTO 사용
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        return new UserDTO(user.getId(), user.getName());
+    }
+}
+```
+
+```java
+// UserDTO.java
+public class UserDTO {
+    private Long id;
+    private String name;
+
+    public UserDTO(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    // Getter, Setter
+}
+```
+
+```java
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+@Service
+public class OtherService {
+
+    private final RestTemplate restTemplate;
+
+    public OtherService(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
+
+    // 서비스 A의 API를 호출하여 사용자 정보를 가져오는 메서드
+    public UserDTO getUserFromServiceA(Long userId) {
+        String url = "http://service-a/users/" + userId;  // 서비스 A의 API URL
+        return restTemplate.getForObject(url, UserDTO.class);
+    }
+}
+```
+
+---
+
+<a id="2-동기-호출로-인한-성능-저하"></a>
+## 2. 동기 호출로 인한 성능 저하
+
+### **가이드라인**
+
+- 서비스 간 API 호출은 가능한 **비동기화**하거나 **메시지 큐**를 사용하여 성능을 최적화합니다.
+- 자주 호출되는 데이터는 **캐시**를 사용하여 네트워크 지연을 최소화합니다.
+
+### **실수**
+
+서비스 간 **동기적 API 호출**로 네트워크 지연과 성능 저하가 발생합니다.
+
+### **방지법**
+
+- 가능하면 **비동기화**하고, 중요하지 않은 데이터는 **메시지 큐**(Kafka, RabbitMQ)로 처리합니다.
+
+### **코드 예시**
+
+```java
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
+
+@Service
+public class UserService {
+
+    @Async
+    public CompletableFuture<UserDTO> getUserDetailsAsync(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        return CompletableFuture.completedFuture(new UserDTO(user.getId(), user.getName()));
+    }
+}
+```
+
+---
+
+<a id="3-모든-데이터를-중복-저장하려는-시도"></a>
+## 3. 모든 데이터를 중복 저장하려는 시도
+
+### **가이드라인**
+
+- 각 서비스는 **자신만의 DB**를 관리하고, 필요한 데이터는 **ID만 저장**합니다.
+- **이벤트 기반 시스템**을 사용하여 데이터 동기화를 처리합니다.
+
+### **실수**
+
+서비스 간 동일한 데이터를 **중복 저장**하려고 시도하는 경우가 있습니다.
+
+### **방지법**
+
+- **이벤트 기반** 시스템을 통해 데이터를 동기화하고, 각 서비스는 **ID만 저장**합니다.
+- 중복된 데이터 저장을 피하고, **메시지 큐** 등을 통해 데이터를 동기화합니다.
+
+### **코드 예시**
+
+**Producer (데이터 변경 이벤트 발생)**
+
+```java
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+
+@Service
+public class UserService {
+
+    @Autowired
+    private KafkaTemplate<String, UserDTO> kafkaTemplate;
+
+    public void updateUser(UserDTO userDTO) {
+        // 사용자 업데이트 로직
+        userRepository.save(userDTO);
+
+        // 업데이트 이벤트 발행
+        kafkaTemplate.send("user-updates", userDTO);
+    }
+}
+```
+
+**Consumer (이벤트 수신 후 데이터 동기화)**
+
+```java
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.stereotype.Service;
+
+@Service
+public class UserEventListener {
+
+    @KafkaListener(topics = "user-updates", groupId = "user-group")
+    public void handleUserUpdate(UserDTO userDTO) {
+        // 다른 서비스의 DB에 동기화 로직
+        anotherService.syncUserData(userDTO);
+    }
+}
+```
+
+---
+
+<a id="4-불완전한-에러-처리-및-회복-계획"></a>
+## 4. 불완전한 에러 처리 및 회복 계획
+
+### **가이드라인**
+
+- **서킷 브레이커** 패턴과 **타임아웃** 및 **재시도** 정책을 사용하여 서비스 간 호출의 안정성을 확보합니다.
+- 서비스는 **자기복구**가 가능하도록 설계합니다.
+
+### **실수**
+
+에러가 발생한 경우, 제대로 처리하지 않아서 서비스 장애가 확산되는 경우가 있습니다.
+
+### **방지법**
+
+- **Hystrix**와 같은 **서킷 브레이커** 패턴을 적용하여, 실패한 서비스가 다른 서비스에 영향을 미치지 않도록 합니다.
+
+### **코드 예시**
+
+```java
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import org.springframework.stereotype.Service;
+
+@Service
+public class UserService {
+
+    @HystrixCommand(fallbackMethod = "fallbackMethod")
+    public String getUserDetails(Long userId) {
+        // 외부 API 호출
+        return restTemplate.getForObject("http://other-service/user/" + userId, String.class);
+    }
+
+    public String fallbackMethod(Long userId) {
+        return "Fallback response: user not available.";
+    }
+}
+```
+
+---
+
+<a id="5-보안-취약점"></a>
+## 5. 보안 취약점
+
+### **가이드라인**
+
+- **OAuth 2.0**이나 **JWT**를 사용하여 각 서비스 간 인증 및 권한 관리를 분리합니다.
+- **API Gateway**에서 인증을 처리하고, 서비스 간 통신은 안전하게 관리합니다.
+
+### **실수**
+
+서비스 간 **인증 및 권한 관리**를 제대로 하지 않아 보안 취약점이 발생하는 경우가 있습니다.
+
+### **방지법**
+
+- **JWT**를 사용하여 서비스 간 인증을 처리하고, **API Gateway**에서 인증을 관리합니다.
+
+### **코드 예시**
+
+```java
+// JWT 토큰 생성
+public String generateToken(String username) {
+    return Jwts.builder()
+            .setSubject(username)
+            .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
+            .signWith(SignatureAlgorithm.HS512, "secretKey")
+            .compact();
+}
+
+// JWT 필터로 인증 체크
+public boolean validateToken(String token) {
+    try {
+        Jwts.parser().setSigningKey("secretKey").parseClaimsJws(token);
+        return true;
+    } catch (JwtException | IllegalArgumentException e) {
+        return false;
+    }
+}
+```
+
+---
+
+<a id="6-불완전한-모니터링-및-로깅"></a>
+## 6. 불완전한 모니터링 및 로깅
+
+### **가이드라인**
+
+- **Centralized Logging**과 **Distributed Tracing**을 사용하여 서비스 간 상호작용을 추적합니다.
+- **Prometheus**와 **Grafana**를 사용하여 서비스 상태를 실시간으로 모니터링합니다.
+
+### **실수**
+
+서비스 간 호출에서 발생한 문제를 **모니터링하지 않아** 빠르게 대응하지 못하는 경우가 있습니다.
+
+### **방지법**
+
+- **Slf4j**와 같은 로깅 시스템을 사용하여 각 서비스의 **동작**을 추적하고, **문제 발생 시 빠르게 대응**할 수 있도록 합니다.
+
+### **코드 예시**
+
+```java
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+@Service
+public class UserService {
+
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
+
+    public UserDTO getUserDetails(Long userId) {
+        logger.info("Fetching user details for userId: {}", userId);
+        UserDTO user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        logger.info("User details fetched: {}", user);
+        return user;
+    }
+}
+```
+
+---
+
+<a id="7-서비스-간-데이터-중복-검증을-하지-않음"></a>
+## 7. 서비스 간 데이터 중복 검증을 하지 않음
+
+### **가이드라인**
+
+- 각 서비스는 **자체 데이터 검증**을 철저히 하고, 서비스 간에 동일한 데이터가 중복되지 않도록 **데이터 무결성**을 관리합니다.
+- 데이터가 중복되면 **동기화**가 어려워지고, 비즈니스 로직에 오류를 일으킬 수 있습니다.
+
+### **실수**
+
+서비스 간 동일한 데이터가 **중복 저장**되거나 **동일한 조건으로 데이터를 처리**하지 않는 경우가 있습니다.
+
+### **방지법**
+
+- 각 서비스는 데이터 저장 전에 **중복 여부**를 확인합니다.
+- **중복 검증**을 **API 레벨**에서 처리하고, 데이터가 이미 존재하는지 **확인**합니다.
+
+### **코드 예시**
+
+```java
+// UserService.java
+@Service
+public class UserService {
+
+    private final UserRepository userRepository;
+
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    public UserDTO createUser(UserDTO userDTO) {
+        // 중복된 사용자 확인
+        if (userRepository.existsByUsername(userDTO.getUsername())) {
+            throw new RuntimeException("User already exists with username: " + userDTO.getUsername());
+        }
+        User user = new User(userDTO.getUsername(), userDTO.getName());
+        userRepository.save(user);
+        return new UserDTO(user.getId(), user.getName());
+    }
+}
+```
+
+---
+
+<a id="8-api-문서화와-명세-부족"></a>
+## 8. API 문서화와 명세 부족
+
+### **가이드라인**
+
+- 모든 **서비스 API**는 문서화하고 **명세**를 작성하여 다른 서비스에서 쉽게 이해하고 사용할 수 있도록 합니다.
+- **Swagger**와 같은 도구를 활용하여 **자동화된 API 문서화**를 제공합니다.
+
+### **실수**
+
+API에 대한 **명세 부족**으로 인해 다른 서비스나 개발자들이 API를 잘못 사용하거나 오해하는 경우가 있습니다.
+
+### **방지법**
+
+- **Swagger**를 사용하여 API 명세를 **자동으로 문서화**하고, API 사용법에 대해 **명확한 문서**를 제공합니다.
+- **API 버전 관리**를 통해, 서비스가 업데이트될 때 다른 서비스에 미치는 영향을 최소화합니다.
+
+### **코드 예시**
+
+```java
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import org.springframework.web.bind.annotation.*;
+
+@Api(tags = "User API")
+@RestController
+@RequestMapping("/users")
+public class UserController {
+
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
+    @ApiOperation(value = "Create a new user", notes = "This endpoint allows creating a new user.")
+    @PostMapping
+    public UserDTO createUser(
+        @ApiParam(value = "User details to create a new user", required = true)
+        @RequestBody UserDTO userDTO) {
+        return userService.createUser(userDTO);
+    }
+}
+```
+
+---
+
+<a id="9-서비스-간-의존성-과도하게-생성"></a>
+## 9. 서비스 간 의존성 과도하게 생성
+
+### **가이드라인**
+
+- 서비스 간의 의존성을 **최소화**하고, 하나의 서비스가 다른 서비스에 **과도하게 의존**하지 않도록 설계합니다.
+- **API 호출**이나 **이벤트**를 통해 필요한 데이터만 교환하고, 서로의 **내부 구현**에 의존하지 않습니다.
+
+### **실수**
+
+한 서비스가 **다른 서비스에 과도하게 의존**하여 하나의 서비스 장애가 전체 시스템에 영향을 미치는 경우가 있습니다.
+
+### **방지법**
+
+- **의존성 최소화**: 서비스를 설계할 때 각 서비스가 독립적으로 동작할 수 있도록 합니다.
+- **API 호출**이나 **이벤트 기반 시스템**을 사용하여, 하나의 서비스 장애가 다른 서비스에 영향을 미치지 않도록 합니다.
+
+### **코드 예시**
+
+**서비스 A (API 호출 예시)**:
+
+```java
+// UserService.java (서비스 A)
+@Service
+public class UserService {
+
+    private final RestTemplate restTemplate;
+
+    public UserService(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
+
+    public String getUserDetails(Long userId) {
+        // 다른 서비스의 API를 통해 사용자 정보 호출
+        ResponseEntity<UserDTO> response = restTemplate.exchange(
+                "http://user-service/users/{userId}",
+                HttpMethod.GET,
+                null,
+                UserDTO.class,
+                userId);
+        return response.getBody().toString();
+    }
+}
+```
+
+---
+
+<a id="10-비즈니스-로직의-복잡도-증가"></a>
+## 10. 비즈니스 로직의 복잡도 증가
+
+### **가이드라인**
+
+- 비즈니스 로직은 **단순화**하고, 각 서비스는 **단일 책임 원칙**(SRP)을 따라야 합니다.
+- **복잡한 로직**을 여러 서비스에 분산시키기보다는, 로직을 **단순화**하고 **하나의 서비스**가 처리할 수 있도록 합니다.
+
+### **실수**
+
+복잡한 비즈니스 로직을 여러 서비스에 나누지 않고, **한 서비스에서 모든 로직**을 처리하려는 경우가 있습니다.
+
+### **방지법**
+
+- 각 서비스는 **단일 책임 원칙**을 따르고, 비즈니스 로직을 **작고 독립적인 단위**로 분리하여 관리합니다.
+- 복잡한 로직은 **도메인 서비스**로 나누어 처리하며, 서비스가 확장되었을 때 **유연성**을 유지합니다.
+
+### **코드 예시**
+
+```java
+// UserService.java
+@Service
+public class UserService {
+
+    private final UserRepository userRepository;
+
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    public void updateUserDetails(Long userId, String newName) {
+        // 단순한 비즈니스 로직 처리
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+        user.setName(newName);
+        userRepository.save(user);
+    }
+}
