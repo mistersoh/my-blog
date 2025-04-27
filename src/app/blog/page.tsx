@@ -37,7 +37,7 @@ export default function BlogPage() {
         {posts.map((post) => (
           <div key={post.id} className="border border-gray-200 p-6 rounded-lg hover:shadow-md transition">
             <h2 className="text-xl font-bold mb-2">
-              <Link href={`/blog/${post.id}/`} className="text-blue-600 hover:underline">
+              <Link href={`/blog/${post.id}`} className="text-blue-600 hover:underline">
                 {post.title}
               </Link>
             </h2>
@@ -68,7 +68,7 @@ export default function BlogPage() {
             )}
             
             <div className="mt-4">
-              <Link href={`/blog/${post.id}/`} className="text-blue-600 hover:underline">
+              <Link href={`/blog/${post.id}`} className="text-blue-600 hover:underline">
                 계속 읽기 →
               </Link>
             </div>
