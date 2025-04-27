@@ -21,7 +21,7 @@ export default function Home() {
             <h2 className="text-2xl font-bold mb-3">이력서</h2>
             <p className="mb-4">저의 경험이 담긴 이력서입니다.</p>
             <Link 
-              href="/resume/"
+              href="/resume"
               className="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
             >
               이력서 보기
@@ -31,7 +31,7 @@ export default function Home() {
             <h2 className="text-2xl font-bold mb-3">블로그</h2>
             <p className="mb-4">최신 블로그 글을 확인해보세요.</p>
             <Link 
-              href="/blog/"
+              href="/blog"
               className="inline-block bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition"
             >
               블로그 보기
@@ -41,7 +41,7 @@ export default function Home() {
             <h2 className="text-2xl font-bold mb-3">태그</h2>
             <p className="mb-4">관심 있는 주제별로 글을 찾아보세요.</p>
             <Link 
-              href="/tag/"
+              href="/tag"
               className="inline-block bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition"
             >
               태그 보기
@@ -53,7 +53,7 @@ export default function Home() {
       <section className="mb-10">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-3xl font-bold">최신 블로그 게시물</h2>
-          <Link href="/blog/" className="text-blue-600 hover:underline">
+          <Link href="/blog" className="text-blue-600 hover:underline">
             모든 글 보기 →
           </Link>
         </div>
@@ -61,7 +61,7 @@ export default function Home() {
           {posts.slice(0, 3).map((post) => (
             <div key={post.id} className="border border-gray-200 p-6 rounded-lg hover:shadow-md transition">
               <h3 className="text-xl font-bold mb-2">
-                <Link href={`/blog/${post.id}/`} className="text-blue-600 hover:underline">
+                <Link href={`/blog/${post.id}`} className="text-blue-600 hover:underline">
                   {post.title}
                 </Link>
               </h3>
