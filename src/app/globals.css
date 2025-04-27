@@ -5,6 +5,8 @@
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-rgb: 255, 255, 255;
+  --code-bg: 40, 44, 52;
+  --code-fg: 220, 220, 220;
 }
 
 body {
@@ -52,15 +54,50 @@ body {
 }
 
 .markdown-body pre {
-  @apply bg-gray-100 p-4 rounded my-4 overflow-auto;
+  @apply my-4 overflow-auto rounded;
+  background-color: rgb(var(--code-bg));
+  padding: 1rem;
+  border: 1px solid #3e4451;
 }
 
 .markdown-body code {
-  @apply bg-gray-100 px-1 py-0.5 rounded text-sm;
+  @apply px-1 py-0.5 rounded;
+  font-family: 'Consolas', 'Monaco', 'Andale Mono', monospace;
+  font-size: 0.9rem;
+  background-color: rgba(var(--code-bg), 0.7);
+  color: rgb(var(--code-fg));
 }
 
 .markdown-body pre code {
-  @apply bg-transparent p-0;
+  @apply p-0 block;
+  background-color: transparent;
+  color: rgb(var(--code-fg));
+  line-height: 1.5;
+  white-space: pre;
+  word-break: normal;
+  word-spacing: normal;
+  tab-size: 4;
+}
+
+.markdown-body pre code .keyword {
+  color: #c678dd;
+}
+
+.markdown-body pre code .string {
+  color: #98c379;
+}
+
+.markdown-body pre code .comment {
+  color: #5c6370;
+  font-style: italic;
+}
+
+.markdown-body pre code .function {
+  color: #61afef;
+}
+
+.markdown-body pre code .number {
+  color: #d19a66;
 }
 
 .markdown-body img {
