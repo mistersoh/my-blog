@@ -1,4 +1,4 @@
-name: Deploy to S3
+name: Deploy to S3 Main
 
 on:
   push:
@@ -14,8 +14,20 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - name: Checkout code
+      - name: 코드 체크아웃
         uses: actions/checkout@v3
+        
+      - name: Node.js 설정
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+          
+      - name: 의존성 설치
+        run: npm ci
+        
+      - name: 정적 사이트 빌드
+        run: npm run build
         
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -25,17 +37,17 @@ jobs:
           aws-region: ap-northeast-2
       
       # S3 웹사이트 설정 업데이트
-      - name: Update S3 website configuration
+      - name: S3 웹사이트 설정
         run: |
           aws s3 website s3://${{ secrets.AWS_S3_BUCKET }} --index-document index.html --error-document 404.html
           
-      # out 폴더의 모든 콘텐츠를 있는 그대로 S3에 동기화
-      - name: Deploy entire out folder to S3
+      # 빌드된 out 폴더의 모든 콘텐츠를 S3에 동기화
+      - name: S3에 파일 배포
         run: |
           aws s3 sync ./out/ s3://${{ secrets.AWS_S3_BUCKET }} --delete
       
       # CloudFront 캐시 무효화 (CDN 사용 시)
-      - name: Invalidate CloudFront (if using CDN)
+      - name: CloudFront 캐시 무효화 (CDN 사용 시)
         if: ${{ env.CLOUDFRONT_DISTRIBUTION_ID != '' }}
         env:
           CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
